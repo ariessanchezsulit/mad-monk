@@ -17,12 +17,25 @@ namespace Game {
 		private Pool pool;
 		
 		[SerializeField]
-		private float interval = 1.5f;
+		private float interval = 2.0f;
+
+		private float totalTime;
+
+		[SerializeField]
+		private int levelInterval = 10;
+
+		[SerializeField]
+		private int totalTimeInt;
+
+		[SerializeField]
+		private int level;
 
 		// probability
 		[SerializeField]
 		[Range(1, 100)]
 		private int[] numberOfBubbles;
+
+		private bool started = false;
 
 		[SerializeField]
 		private List<Bubble> bubbles;
@@ -60,12 +73,92 @@ namespace Game {
 			});
 		}
 
+		private void LateUpdate() {
+			//	2.5
+			//	Bubbles[0] = 100
+			// -
+			//	2
+			//	Bubbles[0] = 100
+			//	Bubbles[1] = 5
+			// -
+			//	1.75
+			//  Bubbles[0] = 100
+			//	Bubbles[1] = 10
+			// -
+			//	1.50
+			//	Bubbles[0] = 100
+			//	Bubbles[1] = 20
+			// -
+			//	1.25
+			//	Bubbles[0] = 100
+			//	Bubbles[1] = 30
+			//	Bubbles[2] = 5
+			// -
+			//	1.0
+			//	Bubbles[0] = 50
+			//	Bubbles[1] = 50
+			//	Bubbles[2] = 10
+
+			if (!this.started) {
+				return;
+			}
+
+			this.totalTime += Time.deltaTime;
+			this.totalTimeInt = Mathf.RoundToInt(this.totalTime);
+
+			// interval every 20 sec
+			this.level = (this.totalTimeInt - (this.totalTimeInt % this.levelInterval)) / this.levelInterval;
+			if (this.level >= 6) {
+				this.AdjustLevel(1.0f, 50, 50, 10);
+			}
+			else if (this.level >= 5) {
+				this.AdjustLevel(1.0f, 100, 30, 5);
+			}
+			else if (this.level >= 4) {
+				this.AdjustLevel(1.25f, 100, 20);
+			}
+			else if (this.level >= 3) {
+				this.AdjustLevel(1.25f, 100, 20);
+			}
+			else if (this.level >= 2) {
+				this.AdjustLevel(1.5f, 100, 10);
+			}
+			else if (this.level >= 1) {
+				this.AdjustLevel(1.5f, 100, 5);
+			}
+			else {
+				this.AdjustLevel(2.0f, 100);
+			}
+		}
+
+		private void AdjustLevel(float interval, params int[] values) {
+			if (this.numberOfBubbles.Length != values.Length) {
+				this.numberOfBubbles = new int[values.Length];
+			}
+
+			// set interval
+			this.interval = interval;
+
+			// set progression
+			for (int i = 0; i < values.Length; i++) {
+				this.numberOfBubbles[i] = values[i];
+			}
+		}
+
 		private void OnStartGame(ISignalParameters @params) {
 			this.StartCoroutine(this.GenerateBubble());
+			this.started = true;
+			this.totalTime = 0.0f;
+			this.totalTimeInt = 0;
+			this.level = 0;
 		}
 
 		private void OnEndGame(ISignalParameters @params) {
 			this.StopAllCoroutines ();
+			this.started = false;
+			this.totalTime = 0.0f;
+			this.totalTimeInt = 0;
+			this.level = 0;
 		}
 
 		private void PopBubble(GestureType type) {
@@ -128,6 +221,8 @@ namespace Game {
 					bubble.transform.localPosition = template.localPosition;
 					bubble.transform.localScale = template.localScale;
 					bubble.SetActive(true);
+
+					yield return new WaitForSeconds(URandom.Range(0.15f, 0.5f));
 				}
 
 				yield return new WaitForSeconds(this.interval);

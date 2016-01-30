@@ -30,7 +30,7 @@ namespace Game {
 
 		private Vector3 axis;
 		private Vector3 pos;
-
+		
 		[SerializeField]
 		private TrailRenderer trail;
 
