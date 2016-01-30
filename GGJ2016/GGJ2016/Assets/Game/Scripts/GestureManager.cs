@@ -6,16 +6,38 @@ namespace Game
 {
     public class GestureManager : MonoBehaviour
     {
-        TKSwipeRecognizer swipeRecognizer;
-        TKTapRecognizer tapRecognizer;
-        TKPinchRecognizer pinchRecognizer;
-        TKLongPressRecognizer longPressRecognizer;
+        // prefabs for gesture effects
+        [SerializeField]
+        private GameObject swipeFXPrefab;
+
+        [SerializeField]
+        private AnimationCurve curve;
+
+        // initial gesture recognizers. can add more later
+        private TKSwipeRecognizer swipeRecognizer;
+        private TKTapRecognizer tapRecognizer;
+        private TKPinchRecognizer pinchRecognizer;
+        private TKLongPressRecognizer longPressRecognizer;
+
+        #region listeners setup
+        private void Awake()
+        {
+            GameSignals.START_GAME.AddListener(OnGameStarted);
+            GameSignals.END_GAME.AddListener(OnGameEnded);
+        }
+
+        private void OnDestroy()
+        {
+            GameSignals.START_GAME.RemoveListener(OnGameStarted);
+            GameSignals.END_GAME.RemoveListener(OnGameEnded);
+        }
 
         private void Start()
         {
             // for testing
             OnGameStarted(null);
         }
+        #endregion
 
         void InitializeRecognizers()
         {
@@ -44,6 +66,7 @@ namespace Game
             TouchKit.removeAllGestureRecognizers();
         }
 
+        #region listeners
         void OnGameStarted(ISignalParameters parameters)
         {
             InitializeRecognizers();
@@ -53,10 +76,20 @@ namespace Game
         {
             DisableRecognizers();
         }
+        #endregion
 
+        #region dispatchers and input processing
         void OnSwipeRecognized(TKSwipeRecognizer r)
         {
             Debug.Log("swipe recognized");
+
+            var start = Camera.main.ScreenToWorldPoint(r.startPoint);
+            var end = Camera.main.ScreenToWorldPoint(r.endPoint);
+
+            start = new Vector3(start.x, start.y, 0);
+            end = new Vector3(end.x, end.y, 0);
+
+            StartCoroutine(SpawnSwipeEffect(start, end, 0.5f, r.swipeVelocity));
 
             var signal = GameSignals.INPUT_SWIPE;
             signal.AddParameter(GameParams.INPUT_SWIPE_DIR, r.completedSwipeDirection);
@@ -88,6 +121,25 @@ namespace Game
             Debug.Log("pinch recognized");
 
             GameSignals.INPUT_PINCH.Dispatch();
+        }
+        #endregion
+
+        IEnumerator SpawnSwipeEffect(Vector3 start, Vector3 end, float duration, float speed)
+        {
+            var direction = start - end;
+            var prefab = Instantiate(swipeFXPrefab, start, Quaternion.LookRotation(direction)) as GameObject;
+            float elapsedTime = 0f;
+
+            while(elapsedTime < duration)
+            {
+                elapsedTime += Time.deltaTime;
+                float fracTime = elapsedTime / duration;
+                prefab.transform.position = direction * curve.Evaluate(fracTime);//Vector3.Lerp(start, end, Mathf.Sqrt(fracTime));
+
+                yield return null;
+            }
+
+            DestroyObject(prefab);
         }
     }
 }
