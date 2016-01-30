@@ -20,6 +20,8 @@ namespace Game
                 if(go)
                 {
                     _instance = go.GetComponent<GestureManager>();
+                    _instance.UseNetwork = true;
+                    
                 }
             }
 
@@ -41,11 +43,17 @@ namespace Game
                 string textToDisplay = "";
                 switch (type)
                 {
+                    case GestureType.TAP:
+                        var pos = (Vector2)parameters.GetParameter(GameParams.INPUT_TAP_POS);
+                        CmdSpawnTapEffectToServer(pos);
+                        textToDisplay = string.Format("{0} Gesture detected!", type.ToString());
+                        break;
                     case GestureType.SWIPE:
                         //var dir = (TKSwipeDirection)parameters.GetParameter(GameParams.INPUT_SWIPE_DIR);
                         //textToDisplay = string.Format("Swipe detected! direction is {0}", dir.ToString());
                         var payload = (SwipePayload)parameters.GetParameter(GameParams.INPUT_SWIPE_PAYLOAD);
-                        SpawnSwipeEffect(payload);
+                        //SpawnSwipeEffect(payload);
+                        CmdSpawnSwipeEffectToServer(payload);
                         textToDisplay = string.Format("Swipe detected! direction: {0}, startPos: {1}, endPos: {2}, velocity: {3}", payload.direction.ToString(), payload.startScreenPos, payload.endScreenPos, payload.velocity);
                         break;
                     default:
@@ -65,16 +73,6 @@ namespace Game
             sig.ClearParameters();
         }
 
-        [Command]
-        void CmdDispatchTextToServer(string text)
-        {
-            //string clientId = GetComponent<NetworkIdentity>().GetInstanceID().ToString();
-            var sig = GameSignals.DEBUG_LOG;
-            sig.AddParameter(GameParams.DEBUG_TEXT, string.Format("[client#{0}]: {1}", clientId, text));
-            sig.Dispatch();
-            sig.ClearParameters();
-        }
-
         void SpawnSwipeEffect(SwipePayload payload)
         {
             var start = Camera.main.ScreenToWorldPoint(payload.startScreenPos);
@@ -88,5 +86,38 @@ namespace Game
                 StartCoroutine(_instance.SpawnSwipeEffect(start, end, 0.5f, payload.velocity));
             }
         }
+
+        void SpawnTapEffect(Vector2 position)
+        {
+            var worldPos = Camera.main.ScreenToWorldPoint(position);
+            if(_instance)
+            {
+                StartCoroutine(_instance.SpawnTapEffect(worldPos));
+            }
+        }
+
+        #region command wrappers
+        [Command]
+        void CmdDispatchTextToServer(string text)
+        {
+            //string clientId = GetComponent<NetworkIdentity>().GetInstanceID().ToString();
+            var sig = GameSignals.DEBUG_LOG;
+            sig.AddParameter(GameParams.DEBUG_TEXT, string.Format("[client#{0}]: {1}", clientId, text));
+            sig.Dispatch();
+            sig.ClearParameters();
+        }
+
+        [Command]
+        void CmdSpawnSwipeEffectToServer(SwipePayload payload)
+        {
+            SpawnSwipeEffect(payload);
+        }
+
+        [Command]
+        void CmdSpawnTapEffectToServer(Vector2 position)
+        {
+            SpawnTapEffect(position);
+        }
+        #endregion
     }
 }
