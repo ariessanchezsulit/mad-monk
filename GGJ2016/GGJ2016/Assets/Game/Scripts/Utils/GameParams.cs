@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Game {
 	
@@ -7,6 +7,12 @@ namespace Game {
 		// buttons
 		public const string BUTTON_TYPE = "ButtonType";
 		public const string BUTTON_DATA = "ButtonData";
+
+		// bubbles
+		public const string BUBBLE = "Bubble";
+
+        // gestures
+        public const string INPUT_SWIPE_DIR = "SwipeDirection";
 	}
 
 }

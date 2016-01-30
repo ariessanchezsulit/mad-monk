@@ -14,7 +14,8 @@ namespace Game {
 	public class BubblesRoot : GameScene {
 
 		[SerializeField]
-		private Bubble bubbleTemplate;
+		private Pool pool;
+		
 		[SerializeField]
 		private float interval = 1.5f;
 
@@ -25,6 +26,13 @@ namespace Game {
 
 		protected override void Awake() {
 			base.Awake();
+			GameSignals.ON_BUBBLE_ADDED_TO_POOL.AddListener((ISignalParameters parameters) => {
+				this.pool.Add((GameObject)parameters.GetParameter(GameParams.BUBBLE));
+			});
+
+			GameSignals.ON_BUBBLE_REMOVED_TO_POOL.AddListener((ISignalParameters parameters) => {
+				this.pool.Remove((GameObject)parameters.GetParameter(GameParams.BUBBLE));
+			});
 		}
 
 		private void Start() {
@@ -39,13 +47,13 @@ namespace Game {
 				int random = URandom.Range(1, 4);
 
 				// TODO: Pool the bubbles here
-				Transform template = this.bubbleTemplate.transform;
+				Transform template = this.pool.Tempalte().transform;
 
 				// difficulty
-				int difficulty = this.CalculateProbability();
+				int numberOfBubbles = this.CalculateProbability();
 
-				for (int i = 0; i <= difficulty; i++) {
-					GameObject bubble = (GameObject)GameObject.Instantiate(template.gameObject, template.position, template.rotation);
+				for (int i = 0; i <= numberOfBubbles; i++) {
+					GameObject bubble = this.pool.Get();
 					bubble.transform.SetParent(template.parent);
 					bubble.transform.localPosition = template.localPosition;
 					bubble.transform.localScale = template.localScale;
