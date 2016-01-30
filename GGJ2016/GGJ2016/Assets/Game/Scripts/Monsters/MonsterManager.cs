@@ -103,8 +103,16 @@ public class MonsterManager : MonoBehaviour
 		// update current monster
 		CurrentMonster = Monsters[CurrentMonsterIndex];
 
+		// set monster speed
+		float towerHeight = MonsterMaxYPosition - MonsterMinYPosition;
+		int heightInBubbles = CurrentMonster.BubblesToReachTop + CurrentMonster.BubblesToReachBottom;
+		float monsterSpeed = towerHeight / ((float)heightInBubbles);
+		CurrentMonster.SetSpeed (monsterSpeed);
+
 		// show monster
-		CurrentMonster.Show ();
+		Vector3 initialPosition = MonsterMinYPosition;
+		initialPosition.y = MonsterMinYPosition + (monsterSpeed * CurrentMonster.BubblesToReachBottom);
+		CurrentMonster.Show (initialPosition);
 	}
 
 	private void HideCurrentMonster()

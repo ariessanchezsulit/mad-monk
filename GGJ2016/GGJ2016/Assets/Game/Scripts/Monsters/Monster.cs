@@ -3,11 +3,10 @@ using System.Collections;
 
 public class Monster : MonoBehaviour
 {
+	public int BubblesToReachBottom;
+	public int BubblesToReachTop;
 
-	[SerializeField]
 	private float Speed;
-	[SerializeField]
-	private Vector3 InitialPosition;
 
 	private GameObject _MyGo;
 	private GameObject MyGo
@@ -39,9 +38,9 @@ public class Monster : MonoBehaviour
 		}
 	}
 
-	public void Show()
+	public void Show(Vector3 initialPosition)
 	{
-		MyT.localPosition = InitialPosition;
+		MyT.localPosition = initialPosition;
 		MyGo.SetActive(true);
 	}
 
@@ -49,6 +48,11 @@ public class Monster : MonoBehaviour
 	{
 		// TODO play die
 		MyGo.SetActive(false);
+	}
+
+	public void SetSpeed(float speed)
+	{
+		Speed = speed;
 	}
 
 	public void Rise()
