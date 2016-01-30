@@ -12,6 +12,14 @@ namespace Game
         LONG_PRESS
     }
 
+    public class SwipePayload
+    {
+        public TKSwipeDirection direction;
+        public Vector2 startScreenPos;
+        public Vector2 endScreenPos;
+        public float velocity;
+    }
+
     public class GestureManager : MonoBehaviour
     {
         [SerializeField]
@@ -96,13 +104,13 @@ namespace Game
         {
             Debug.Log("swipe recognized");
 
-            var start = Camera.main.ScreenToWorldPoint(r.startPoint);
-            var end = Camera.main.ScreenToWorldPoint(r.endPoint);
+            //var start = Camera.main.ScreenToWorldPoint(r.startPoint);
+            //var end = Camera.main.ScreenToWorldPoint(r.endPoint);
 
-            start = new Vector3(start.x, start.y, 0);
-            end = new Vector3(end.x, end.y, 0);
+            //start = new Vector3(start.x, start.y, 0);
+            //end = new Vector3(end.x, end.y, 0);
 
-            StartCoroutine(SpawnSwipeEffect(start, end, 0.5f, r.swipeVelocity));
+            //StartCoroutine(SpawnSwipeEffect(start, end, 0.5f, r.swipeVelocity));
 
             var signal = GameSignals.INPUT_SWIPE;
             signal.AddParameter(GameParams.INPUT_SWIPE_DIR, r.completedSwipeDirection);
@@ -111,7 +119,14 @@ namespace Game
 
             var genericSignal = GameSignals.INPUT_GENERIC;
             genericSignal.AddParameter(GameParams.INPUT_TYPE, GestureType.SWIPE);
-            genericSignal.AddParameter(GameParams.INPUT_SWIPE_DIR, r.completedSwipeDirection);
+            //genericSignal.AddParameter(GameParams.INPUT_SWIPE_DIR, r.completedSwipeDirection);
+            genericSignal.AddParameter(GameParams.INPUT_SWIPE_PAYLOAD, new SwipePayload()
+            {
+                velocity = r.swipeVelocity,
+                startScreenPos = r.startPoint,
+                endScreenPos = r.endPoint,
+                direction = r.completedSwipeDirection
+            });
             genericSignal.Dispatch();
             genericSignal.ClearParameters();
         }
@@ -120,7 +135,7 @@ namespace Game
         {
             Debug.Log("tap recognized");
             var worldPos = Camera.main.ScreenToWorldPoint(r.touchLocation());
-            StartCoroutine(SpawnTapEffect(worldPos));
+            //StartCoroutine(SpawnTapEffect(worldPos));
             GameSignals.INPUT_TAP.Dispatch();
 
             var signal = GameSignals.INPUT_GENERIC;
@@ -159,7 +174,7 @@ namespace Game
         }
         #endregion
 
-        IEnumerator SpawnSwipeEffect(Vector3 start, Vector3 end, float duration, float speed)
+        public IEnumerator SpawnSwipeEffect(Vector3 start, Vector3 end, float duration, float speed)
         {
             var direction = start - end;
             var prefab = Instantiate(swipeFXPrefab, start, Quaternion.LookRotation(direction)) as GameObject;
@@ -178,7 +193,7 @@ namespace Game
             DestroyObject(prefab);
         }
 
-        private IEnumerator SpawnTapEffect(Vector3 position)
+        public IEnumerator SpawnTapEffect(Vector3 position)
         {
             var prefab = Instantiate(tapFXPrefab, position, Quaternion.identity) as GameObject;
             if (effectsRoot) prefab.transform.SetParent(effectsRoot);
