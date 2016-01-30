@@ -27,9 +27,6 @@ namespace Game {
 		protected override void Awake() {
 			base.Awake();
 
-			// temp for test
-			LoadSceneAdditive (EScene.Monsters);
-
 			GameSignals.ON_MONSTER_DEAD.AddListener (OnMonsterDead);
 			GameSignals.END_GAME.AddListener (OnGameEnd);
 		}
