@@ -32,7 +32,7 @@ namespace Game {
 
 		[SerializeField]
 		private EBubbleType bubbleType;
-		
+
 		private bool popped = false;
 
 		private void Awake() {

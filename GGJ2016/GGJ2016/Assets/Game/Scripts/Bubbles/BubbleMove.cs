@@ -31,7 +31,11 @@ namespace Game {
 		private Vector3 axis;
 		private Vector3 pos;
 
+		[SerializeField]
+		private TrailRenderer trail;
+
 		private void Awake() {
+			Assertion.AssertNotNull(this.trail);
 			this.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
 		}
 
@@ -93,6 +97,17 @@ namespace Game {
 			}
 
 			this.transform.localScale = new Vector3(scale, scale, scale);
+
+			// scale trail
+			float maxTrailSize = 30.0f;
+			scale = this.totalTime / maxTrailSize;
+
+			// max
+			if (scale > maxTrailSize) {
+				scale = maxTrailSize;
+			}
+
+			this.trail.startWidth = maxTrailSize;
 		}
 	}
 
