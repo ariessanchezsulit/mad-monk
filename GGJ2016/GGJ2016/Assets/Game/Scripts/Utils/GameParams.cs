@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Game {
 	
@@ -10,6 +10,9 @@ namespace Game {
 
 		// bubbles
 		public const string BUBBLE = "Bubble";
+
+        // gestures
+        public const string INPUT_SWIPE_DIR = "SwipeDirection";
 	}
 
 }
