@@ -51,8 +51,8 @@ namespace Game {
 			GameSignals.INPUT_GENERIC.AddListener((ISignalParameters parameters) => {
 				GestureType gesture = (GestureType)parameters.GetParameter(GameParams.INPUT_TYPE);
 				if (gesture == GestureType.SWIPE) {
-					TKSwipeDirection direction = (TKSwipeDirection)parameters.GetParameter(GameParams.INPUT_SWIPE_DIR);
-					this.PopBubble(gesture, direction);
+					SwipePayload swipePayload = (SwipePayload)parameters.GetParameter(GameParams.INPUT_SWIPE_PAYLOAD);
+					this.PopBubble(gesture, swipePayload.direction);
 				}
 				else {
 					this.PopBubble(gesture);
