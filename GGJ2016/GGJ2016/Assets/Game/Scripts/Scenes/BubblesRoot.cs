@@ -48,38 +48,15 @@ namespace Game {
 				GameObject.Destroy(obj);
 			});
 
-			GameSignals.INPUT_TAP.AddListener((ISignalParameters parameters) => {
-				//Debug.LogFormat("Tap\n");
-				this.PopBubble(EBubbleType.Tap);
-			});
-
-			GameSignals.INPUT_SWIPE.AddListener((ISignalParameters parameters) => {
-				TKSwipeDirection direction = (TKSwipeDirection)parameters.GetParameter(GameParams.INPUT_SWIPE_DIR);
-				//Debug.LogFormat("Swipe {0}\n", direction);
-				switch (direction) {
-				case TKSwipeDirection.Up:
-					this.PopBubble(EBubbleType.SwipeUp);
-					break;
-				case TKSwipeDirection.Down:
-					this.PopBubble(EBubbleType.SwipeDown);
-					break;
-				case TKSwipeDirection.Left:
-					this.PopBubble(EBubbleType.SwipeLeft);
-					break;
-				case TKSwipeDirection.Right:
-					this.PopBubble(EBubbleType.SwipeRight);
-					break;
+			GameSignals.INPUT_GENERIC.AddListener((ISignalParameters parameters) => {
+				GestureType gesture = (GestureType)parameters.GetParameter(GameParams.INPUT_TYPE);
+				if (gesture == GestureType.SWIPE) {
+					TKSwipeDirection direction = (TKSwipeDirection)parameters.GetParameter(GameParams.INPUT_SWIPE_DIR);
+					this.PopBubble(gesture, direction);
 				}
-			});
-
-			GameSignals.INPUT_PINCH.AddListener((ISignalParameters parameters) => {
-				//Debug.LogFormat("Pinch\n");
-				this.PopBubble(EBubbleType.Pinch);
-			});
-
-			GameSignals.INPUT_LONG_PRESS.AddListener((ISignalParameters parameters) => {
-				//Debug.LogFormat("LongPress\n");
-				this.PopBubble(EBubbleType.LongPress);
+				else {
+					this.PopBubble(gesture);
+				}
 			});
 		}
 
@@ -87,9 +64,39 @@ namespace Game {
 			this.StartCoroutine(this.GenerateBubble());
 		}
 
-		private void OnEndGame(ISignalParameters @params)
-		{
+		private void OnEndGame(ISignalParameters @params) {
 			this.StopAllCoroutines ();
+		}
+
+		private void PopBubble(GestureType type) {
+			switch (type) {
+			case GestureType.LONG_PRESS:
+				this.PopBubble(EBubbleType.LongPress);
+				break;
+			case GestureType.PINCH:
+				this.PopBubble(EBubbleType.Pinch);
+				break;
+			case GestureType.TAP:
+				this.PopBubble(EBubbleType.Tap);
+				break;
+			}
+		}
+
+		private void PopBubble(GestureType type, TKSwipeDirection direction) {
+			switch (direction) {
+			case TKSwipeDirection.Up:
+				this.PopBubble(EBubbleType.SwipeUp);
+				break;
+			case TKSwipeDirection.Down:
+				this.PopBubble(EBubbleType.SwipeDown);
+				break;
+			case TKSwipeDirection.Left:
+				this.PopBubble(EBubbleType.SwipeLeft);
+				break;
+			case TKSwipeDirection.Right:
+				this.PopBubble(EBubbleType.SwipeRight);
+				break;
+			}
 		}
 
 		private void PopBubble(EBubbleType type) {
