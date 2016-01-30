@@ -3,13 +3,22 @@ using System.Collections;
 
 public class Monster : MonoBehaviour
 {
-	[SerializeField]
-	private GameObject RendererGroup;
 
 	[SerializeField]
 	private float Speed;
 	[SerializeField]
 	private Vector3 InitialPosition;
+
+	private GameObject _MyGo;
+	private GameObject MyGo
+	{
+		get
+		{
+			if (_MyGo == null)
+				_MyGo = gameObject;
+			return _MyGo;
+		}
+	}
 
 	private Transform _MyT;
 	private Transform MyT
@@ -17,7 +26,7 @@ public class Monster : MonoBehaviour
 		get
 		{
 			if (_MyT == null)
-				_MyT = null;
+				_MyT = transform;
 			return _MyT;
 		}
 	}
@@ -33,13 +42,13 @@ public class Monster : MonoBehaviour
 	public void Show()
 	{
 		MyT.localPosition = InitialPosition;
-		RendererGroup.SetActive(false);
+		MyGo.SetActive(true);
 	}
 
 	public void Hide()
 	{
 		// TODO play die
-		RendererGroup.SetActive(true);
+		MyGo.SetActive(false);
 	}
 
 	public void Rise()

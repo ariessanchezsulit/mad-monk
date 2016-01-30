@@ -19,7 +19,7 @@ public class MonsterManager : MonoBehaviour
 	void Awake()
 	{
 		// subscribe to signals
-		GameSignals.START_GAME.AddListener (OnGameStart);
+		GameSignals.START_GAME.AddListener (OnStartGame);
 		GameSignals.ON_BUBBLE_POPPED.AddListener (OnBubblePopped);
 		GameSignals.ON_BUBBLE_MISSED.AddListener (OnBubbleMissed);
 	}
@@ -27,14 +27,34 @@ public class MonsterManager : MonoBehaviour
 	void OnDestroy()
 	{
 		// subscribe to signals
-		GameSignals.START_GAME.RemoveListener (OnGameStart);
+		GameSignals.START_GAME.RemoveListener (OnStartGame);
 		GameSignals.ON_BUBBLE_POPPED.RemoveListener (OnBubblePopped);
 		GameSignals.ON_BUBBLE_MISSED.RemoveListener (OnBubbleMissed);
 	}
 
-	#region Event listener
-	private void OnGameStart(ISignalParameters @params)
+	// TEMP FOR TEST
+	void Update()
 	{
+		if (Input.GetKeyUp (KeyCode.W)) {
+			GameSignals.ON_BUBBLE_MISSED.Dispatch ();
+		}
+
+		if (Input.GetKeyUp (KeyCode.S)) {
+			GameSignals.ON_BUBBLE_POPPED.Dispatch ();
+		}
+
+		if (Input.GetKeyUp (KeyCode.I)) {
+			GameSignals.START_GAME.Dispatch ();
+		}
+	}
+
+	#region Event listener
+	private void OnStartGame(ISignalParameters @params)
+	{
+		Debug.Log ("OnStartGame");
+		// hide current monster if applicable
+		HideCurrentMonster ();
+
 		// reset monster index
 		CurrentMonsterIndex = -1;
 
@@ -51,8 +71,7 @@ public class MonsterManager : MonoBehaviour
 		bool isMonsterOnTop = CurrentMonster.YPosition >= MonsterMinYPosition;
 		if (isMonsterOnTop) {
 			// dispatch end game
-			Signal signal = GameSignals.END_GAME;
-			signal.Dispatch ();
+			GameSignals.END_GAME.Dispatch ();
 		}
 	}
 
@@ -65,11 +84,10 @@ public class MonsterManager : MonoBehaviour
 		bool monsterDefeated = CurrentMonster.YPosition < MonsterMinYPosition;
 		if (monsterDefeated) {
 			// kill current monster
-			KillCurrentMonster();
+			HideCurrentMonster();
 
 			// dispatch monster dead
-			Signal signal = GameSignals.ON_MONSTER_DEAD;
-			signal.Dispatch();
+			GameSignals.ON_MONSTER_DEAD.Dispatch();
 
 			// replace with new monster
 			ShowNextMonster();
@@ -89,8 +107,11 @@ public class MonsterManager : MonoBehaviour
 		CurrentMonster.Show ();
 	}
 
-	private void KillCurrentMonster()
+	private void HideCurrentMonster()
 	{
+		if (CurrentMonster == null)
+			return;
+		
 		// hide monster
 		CurrentMonster.Hide ();
 	}
