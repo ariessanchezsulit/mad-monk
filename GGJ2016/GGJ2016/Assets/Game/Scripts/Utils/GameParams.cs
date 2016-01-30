@@ -7,7 +7,6 @@ namespace Game {
 		// buttons
 		public const string BUTTON_TYPE = "ButtonType";
 		public const string BUTTON_DATA = "ButtonData";
-
 	}
 
 }
