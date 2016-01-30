@@ -30,6 +30,9 @@ namespace Game {
 		protected override void Awake() {
 			base.Awake();
 
+			GameSignals.START_GAME.AddListener (OnStartGame);
+			GameSignals.END_GAME.AddListener (OnEndGame);
+
 			GameSignals.ON_BUBBLE_ADDED_TO_POOL.AddListener((ISignalParameters parameters) => {
 				//this.pool.Add((GameObject)parameters.GetParameter(GameParams.BUBBLE));
 				GameObject obj = (GameObject)parameters.GetParameter(GameParams.BUBBLE);
@@ -80,8 +83,13 @@ namespace Game {
 			});
 		}
 
-		private void Start() {
+		private void OnStartGame(ISignalParameters @params) {
 			this.StartCoroutine(this.GenerateBubble());
+		}
+
+		private void OnEndGame(ISignalParameters @params)
+		{
+			this.StopAllCoroutines ();
 		}
 
 		private void PopBubble(EBubbleType type) {
