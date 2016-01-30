@@ -6,6 +6,9 @@ namespace Game
 {
     public class GestureManager : MonoBehaviour
     {
+        [SerializeField]
+        public Transform effectsRoot;
+
         // prefabs for gesture effects
         [SerializeField]
         private GameObject swipeFXPrefab;
@@ -131,6 +134,7 @@ namespace Game
         {
             var direction = start - end;
             var prefab = Instantiate(swipeFXPrefab, start, Quaternion.LookRotation(direction)) as GameObject;
+            if (effectsRoot) prefab.transform.SetParent(effectsRoot);
             float elapsedTime = 0f;
 
             while(elapsedTime < duration)
@@ -148,6 +152,7 @@ namespace Game
         private IEnumerator SpawnTapEffect(Vector3 position)
         {
             var prefab = Instantiate(tapFXPrefab, position, Quaternion.identity) as GameObject;
+            if (effectsRoot) prefab.transform.SetParent(effectsRoot);
             yield return null;
         }
     }
