@@ -27,7 +27,13 @@ namespace Game {
 		}
 
 		private IEnumerator Fade() {
-			yield return new WaitForSeconds(5.0f);
+			yield return new WaitForSeconds(this.fadeDuration);
+
+			// dispatch bubble popped
+			Signal signal = GameSignals.ON_BUBBLE_POPPED;
+			signal.Dispatch();
+
+			// destroy game object
 			GameObject.Destroy(this.gameObject);
 		}
 
