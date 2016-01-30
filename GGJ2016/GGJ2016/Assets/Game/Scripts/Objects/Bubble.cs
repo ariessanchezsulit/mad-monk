@@ -40,7 +40,13 @@ namespace Game {
 		private Vector3 axis;
 		private Vector3 pos;
 
-		private void Awake() {
+		private void Start() {
+			this.pos = this.transform.position;
+			this.axis = this.transform.right;
+			this.Move();
+		}
+
+		private void OnEnable() {
 			// random values
 			this.speed = URandom.Range(100.0f, 500.0f);
 			this.frequency = URandom.Range(5.0f, 5.0f);
@@ -48,13 +54,11 @@ namespace Game {
 			this.direction = URandom.Range(0, 2);
 			float ranScale = URandom.Range(1.0f, 2.5f);
 			this.transform.localScale = new Vector3(ranScale, ranScale, ranScale);
-			//this.direction = 1;
-		}
 
-		private void Start() {
-			this.pos = this.transform.position;
-			this.axis = this.transform.right;
-			this.Move();
+			// add to pool
+			//Signal signal = GameSignals.ON_BUBBLE_ADDED_TO_POOL;
+			//signal.AddParameter(GameParams.BUBBLE, this.gameObject);
+			//signal.Dispatch();
 		}
 
 		private void FixedUpdate() {
@@ -66,6 +70,11 @@ namespace Game {
 			if (this.transform.position.y >= CAP_Y_POSITION) {
 				// pop here
 				GameObject.Destroy(this.gameObject);
+
+				// remove to pool
+				//Signal signal = GameSignals.ON_BUBBLE_REMOVED_TO_POOL;
+				//signal.AddParameter(GameParams.BUBBLE, this.gameObject);
+				//signal.Dispatch();
 			}
 		}
 

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 using System;
 using System.Collections;
@@ -20,6 +20,9 @@ namespace Game {
         public static readonly Signal INPUT_SWIPE = new Signal("swipe");
         public static readonly Signal INPUT_PINCH = new Signal("pinch");
         public static readonly Signal INPUT_LONG_PRESS = new Signal("longpress");
-    }
+
+		public static readonly Signal ON_BUBBLE_ADDED_TO_POOL = new Signal("OnBubbleAddedToPool");
+		public static readonly Signal ON_BUBBLE_REMOVED_TO_POOL = new Signal("OnBubbleRemovedToPool");
+	}
 
 }
