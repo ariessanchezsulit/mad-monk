@@ -45,15 +45,28 @@ namespace Game
                 {
                     case GestureType.TAP:
                         var pos = (Vector2)parameters.GetParameter(GameParams.INPUT_TAP_POS);
+
+                        // server already dispatches this on its side
+                        if(!isServer)
+                            CmdDispatchTap(pos);
+
                         CmdSpawnTapEffectToServer(pos);
+
                         textToDisplay = string.Format("{0} Gesture detected!", type.ToString());
                         break;
                     case GestureType.SWIPE:
                         //var dir = (TKSwipeDirection)parameters.GetParameter(GameParams.INPUT_SWIPE_DIR);
                         //textToDisplay = string.Format("Swipe detected! direction is {0}", dir.ToString());
-                        var payload = (SwipePayload)parameters.GetParameter(GameParams.INPUT_SWIPE_PAYLOAD);
                         //SpawnSwipeEffect(payload);
+
+                        var payload = (SwipePayload)parameters.GetParameter(GameParams.INPUT_SWIPE_PAYLOAD);
+
+                        // server already dispatches this on its side
+                        if (!isServer)
+                            CmdDispatchSwipe(payload);
+
                         CmdSpawnSwipeEffectToServer(payload);
+
                         textToDisplay = string.Format("Swipe detected! direction: {0}, startPos: {1}, endPos: {2}, velocity: {3}", payload.direction.ToString(), payload.startScreenPos, payload.endScreenPos, payload.velocity);
                         break;
                     default:
@@ -117,6 +130,30 @@ namespace Game
         void CmdSpawnTapEffectToServer(Vector2 position)
         {
             SpawnTapEffect(position);
+        }
+
+        [Command]
+        void CmdDispatchSwipe(SwipePayload payload)
+        {
+            //if (_instance) _instance.DispatchNetworkSwipe(payload);
+            Debug.Log("Client Swipe detected");
+
+            var signal = GameSignals.INPUT_NETWORK;
+            signal.AddParameter(GameParams.INPUT_TYPE, GestureType.SWIPE);
+            signal.Dispatch();
+            signal.ClearParameters();
+        }
+
+        [Command]
+        void CmdDispatchTap(Vector2 position)
+        {
+            //if (_instance) _instance.DispatchNetworkTap(position);
+            Debug.Log("Client Tap detected");
+
+            var signal = GameSignals.INPUT_NETWORK;
+            signal.AddParameter(GameParams.INPUT_TYPE, GestureType.TAP);
+            signal.Dispatch();
+            signal.ClearParameters();
         }
         #endregion
     }

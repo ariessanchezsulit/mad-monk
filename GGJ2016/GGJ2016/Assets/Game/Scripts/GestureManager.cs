@@ -9,7 +9,9 @@ namespace Game
         TAP,
         SWIPE,
         PINCH,
-        LONG_PRESS
+        LONG_PRESS,
+        //NETWORK_TAP,
+        //NETWORK_SWIPE
     }
 
     public class SwipePayload
@@ -40,6 +42,7 @@ namespace Game
         private TKPinchRecognizer pinchRecognizer;
         private TKLongPressRecognizer longPressRecognizer;
 
+        [SerializeField]
         private bool _useNetwork = false;
 
         public bool UseNetwork
@@ -108,7 +111,7 @@ namespace Game
         #endregion
 
         #region dispatchers and input processing
-        void OnSwipeRecognized(TKSwipeRecognizer r)
+        public void OnSwipeRecognized(TKSwipeRecognizer r)
         {
             Debug.Log("swipe recognized");
 
@@ -129,22 +132,29 @@ namespace Game
             }
             else
             {
-                var genericSignal = GameSignals.INPUT_GENERIC;
-                genericSignal.AddParameter(GameParams.INPUT_TYPE, GestureType.SWIPE);
-                //genericSignal.AddParameter(GameParams.INPUT_SWIPE_DIR, r.completedSwipeDirection);
-                genericSignal.AddParameter(GameParams.INPUT_SWIPE_PAYLOAD, new SwipePayload()
+                DispatchNetworkSwipe(new SwipePayload()
                 {
                     velocity = r.swipeVelocity,
                     startScreenPos = r.startPoint,
                     endScreenPos = r.endPoint,
                     direction = r.completedSwipeDirection
                 });
-                genericSignal.Dispatch();
-                genericSignal.ClearParameters();
             }
         }
 
-        void OnTapRecognized(TKTapRecognizer r)
+        // don't use in gesture client controller
+        public void DispatchNetworkSwipe(SwipePayload payload)
+        {
+            //Debug.Log("Network Swipe detected");
+
+            var genericSignal = GameSignals.INPUT_GENERIC;
+            genericSignal.AddParameter(GameParams.INPUT_TYPE, GestureType.SWIPE);
+            genericSignal.AddParameter(GameParams.INPUT_SWIPE_PAYLOAD, payload);
+            genericSignal.Dispatch();
+            genericSignal.ClearParameters();
+        }
+
+        public void OnTapRecognized(TKTapRecognizer r)
         {
             Debug.Log("tap recognized");
 
@@ -156,20 +166,28 @@ namespace Game
             }
             else
             {
-                var signal = GameSignals.INPUT_GENERIC;
-                signal.AddParameter(GameParams.INPUT_TYPE, GestureType.TAP);
-                signal.AddParameter(GameParams.INPUT_TAP_POS, r.touchLocation());
-                signal.Dispatch();
-                signal.ClearParameters();
+                DispatchNetworkTap(r.touchLocation());
             }
         }
 
-        void OnLongTapRecognized(TKLongPressRecognizer r)
+        // don't use in gesture client controller
+        public void DispatchNetworkTap(Vector2 position)
+        {
+            //Debug.Log("Network Tap detected");
+
+            var signal = GameSignals.INPUT_GENERIC;
+            signal.AddParameter(GameParams.INPUT_TYPE, GestureType.TAP);
+            signal.AddParameter(GameParams.INPUT_TAP_POS, position);
+            signal.Dispatch();
+            signal.ClearParameters();
+        }
+
+        public void OnLongTapRecognized(TKLongPressRecognizer r)
         {
             Debug.Log("long press started");
         }
 
-        void OnLongTapFinished(TKLongPressRecognizer r)
+        public void OnLongTapFinished(TKLongPressRecognizer r)
         {
             Debug.Log("long press finished");
 
@@ -184,7 +202,7 @@ namespace Game
             }
         }
 
-        void OnPinchRecognized(TKPinchRecognizer r)
+        public void OnPinchRecognized(TKPinchRecognizer r)
         {
             Debug.Log("pinch recognized");
 
