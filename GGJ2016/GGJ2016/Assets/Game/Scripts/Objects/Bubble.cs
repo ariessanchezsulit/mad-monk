@@ -97,7 +97,7 @@ namespace Game {
 		}
 
 		private void Move() {
-			this.pos += this.transform.up * Time.fixedDeltaTime * this.speed;
+			this.pos += this.transform.up * Time.fixedDeltaTime * 0.75f * this.speed;
 
 			if (this.direction > 0) {
 				this.transform.position = this.pos + this.axis * Mathf.Sin(Time.time * this.frequency) * this.magnitude;
