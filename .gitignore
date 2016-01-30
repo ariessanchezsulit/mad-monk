@@ -1,24 +1,24 @@
 # ============================ #
 # GoSnap Unity Project #
 # ============================ #
-Project/Temp/*
-Project/Obj/*
-Project/UnityGenerated/*
-Project/Library/*
+GGJ2016/GGJ2016/Temp/*
+GGJ2016/GGJ2016/Obj/*
+GGJ2016/GGJ2016/UnityGenerated/*
+GGJ2016/GGJ2016/Library/*
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
 # ===================================== #
-Project/ExportedObj/
-Project/*.svd
-Project/*.userprefs
-Project/*.csproj
-Project/*.pidb
-Project/*.suo
-Project/*.sln
-Project/*.user
-Project/*.unityproj
-Project/*.booproj
+GGJ2016/GGJ2016/ExportedObj/
+GGJ2016/GGJ2016/*.svd
+GGJ2016/GGJ2016/*.userprefs
+GGJ2016/GGJ2016/*.csproj
+GGJ2016/GGJ2016/*.pidb
+GGJ2016/GGJ2016/*.suo
+GGJ2016/GGJ2016/*.sln
+GGJ2016/GGJ2016/*.user
+GGJ2016/GGJ2016/*.unityproj
+GGJ2016/GGJ2016/*.booproj
 
 # ============ #
 # OS generated #
@@ -35,5 +35,5 @@ thumbs.db
 Builds
 *.csproj
 *.sln
-Project/Assets/__MACOSX/
-Project/Assets/__MACOSX.meta
+GGJ2016/GGJ2016/Assets/__MACOSX/
+GGJ2016/GGJ2016/Assets/__MACOSX.meta
