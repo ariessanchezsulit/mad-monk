@@ -16,6 +16,8 @@ public class MonsterManager : MonoBehaviour
 	[SerializeField]
 	private float TowerBottomY;
 
+	private bool IsActive = false;
+
 	void Awake()
 	{
 		// subscribe to signals
@@ -51,7 +53,8 @@ public class MonsterManager : MonoBehaviour
 	#region Event listener
 	private void OnStartGame(ISignalParameters @params)
 	{
-		Debug.Log ("OnStartGame");
+		IsActive = true;
+
 		// hide current monster if applicable
 		HideCurrentMonster ();
 
@@ -64,12 +67,17 @@ public class MonsterManager : MonoBehaviour
 
 	private void OnBubbleMissed(ISignalParameters @params)
 	{
+		if (!IsActive)
+			return;
+
 		// raise monster
 		CurrentMonster.Rise ();
 
 		// check if monster has reached character
 		bool isMonsterOnTop = CurrentMonster.YPosition >= TowerTopY;
 		if (isMonsterOnTop) {
+			IsActive = false;
+
 			// dispatch end game
 			GameSignals.END_GAME.Dispatch ();
 		}
@@ -77,6 +85,9 @@ public class MonsterManager : MonoBehaviour
 
 	private void OnBubblePopped(ISignalParameters @params)
 	{
+		if (!IsActive)
+			return;
+		
 		// lower monster
 		CurrentMonster.Lower ();
 
