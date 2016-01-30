@@ -57,7 +57,8 @@ namespace Game {
 			this.totalTime = 0.0f;
 			this.scaleDuration = URandom.Range(0.15f, 0.35f);
 			this.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
-			this.capScale = URandom.Range(1.0f, 2.0f);
+			//this.capScale = URandom.Range(0.5f, 1.0f);
+			this.capScale = 1.0f;
 		}
 
 		private void FixedUpdate() {
