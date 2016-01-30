@@ -19,7 +19,7 @@ namespace Game
         public Vector2 endScreenPos;
         public float velocity;
     }
-
+    
     public class GestureManager : MonoBehaviour
     {
         [SerializeField]
@@ -39,6 +39,14 @@ namespace Game
         private TKTapRecognizer tapRecognizer;
         private TKPinchRecognizer pinchRecognizer;
         private TKLongPressRecognizer longPressRecognizer;
+
+        private bool _useNetwork = false;
+
+        public bool UseNetwork
+        {
+            get { return _useNetwork; }
+            set { _useNetwork = value; }
+        }
 
         #region listeners setup
         private void Awake()
@@ -82,7 +90,7 @@ namespace Game
             Debug.Log("recognizers successfully initialized");
         }
 
-        void DisableRecognizers()
+        public void DisableRecognizers()
         {
             TouchKit.removeAllGestureRecognizers();
         }
@@ -104,44 +112,56 @@ namespace Game
         {
             Debug.Log("swipe recognized");
 
-            //var start = Camera.main.ScreenToWorldPoint(r.startPoint);
-            //var end = Camera.main.ScreenToWorldPoint(r.endPoint);
-
-            //start = new Vector3(start.x, start.y, 0);
-            //end = new Vector3(end.x, end.y, 0);
-
-            //StartCoroutine(SpawnSwipeEffect(start, end, 0.5f, r.swipeVelocity));
-
-            var signal = GameSignals.INPUT_SWIPE;
-            signal.AddParameter(GameParams.INPUT_SWIPE_DIR, r.completedSwipeDirection);
-            signal.Dispatch();
-            signal.ClearParameters();
-
-            var genericSignal = GameSignals.INPUT_GENERIC;
-            genericSignal.AddParameter(GameParams.INPUT_TYPE, GestureType.SWIPE);
-            //genericSignal.AddParameter(GameParams.INPUT_SWIPE_DIR, r.completedSwipeDirection);
-            genericSignal.AddParameter(GameParams.INPUT_SWIPE_PAYLOAD, new SwipePayload()
+            if (!_useNetwork)
             {
-                velocity = r.swipeVelocity,
-                startScreenPos = r.startPoint,
-                endScreenPos = r.endPoint,
-                direction = r.completedSwipeDirection
-            });
-            genericSignal.Dispatch();
-            genericSignal.ClearParameters();
+                var start = Camera.main.ScreenToWorldPoint(r.startPoint);
+                var end = Camera.main.ScreenToWorldPoint(r.endPoint);
+
+                start = new Vector3(start.x, start.y, 0);
+                end = new Vector3(end.x, end.y, 0);
+
+                StartCoroutine(SpawnSwipeEffect(start, end, 0.5f, r.swipeVelocity));
+
+                var signal = GameSignals.INPUT_SWIPE;
+                signal.AddParameter(GameParams.INPUT_SWIPE_DIR, r.completedSwipeDirection);
+                signal.Dispatch();
+                signal.ClearParameters();
+            }
+            else
+            {
+                var genericSignal = GameSignals.INPUT_GENERIC;
+                genericSignal.AddParameter(GameParams.INPUT_TYPE, GestureType.SWIPE);
+                //genericSignal.AddParameter(GameParams.INPUT_SWIPE_DIR, r.completedSwipeDirection);
+                genericSignal.AddParameter(GameParams.INPUT_SWIPE_PAYLOAD, new SwipePayload()
+                {
+                    velocity = r.swipeVelocity,
+                    startScreenPos = r.startPoint,
+                    endScreenPos = r.endPoint,
+                    direction = r.completedSwipeDirection
+                });
+                genericSignal.Dispatch();
+                genericSignal.ClearParameters();
+            }
         }
 
         void OnTapRecognized(TKTapRecognizer r)
         {
             Debug.Log("tap recognized");
-            var worldPos = Camera.main.ScreenToWorldPoint(r.touchLocation());
-            //StartCoroutine(SpawnTapEffect(worldPos));
-            GameSignals.INPUT_TAP.Dispatch();
 
-            var signal = GameSignals.INPUT_GENERIC;
-            signal.AddParameter(GameParams.INPUT_TYPE, GestureType.TAP);
-            signal.Dispatch();
-            signal.ClearParameters();
+            if (!_useNetwork)
+            {
+                var worldPos = Camera.main.ScreenToWorldPoint(r.touchLocation());
+                StartCoroutine(SpawnTapEffect(worldPos));
+                GameSignals.INPUT_TAP.Dispatch();
+            }
+            else
+            {
+                var signal = GameSignals.INPUT_GENERIC;
+                signal.AddParameter(GameParams.INPUT_TYPE, GestureType.TAP);
+                signal.AddParameter(GameParams.INPUT_TAP_POS, r.touchLocation());
+                signal.Dispatch();
+                signal.ClearParameters();
+            }
         }
 
         void OnLongTapRecognized(TKLongPressRecognizer r)
@@ -153,27 +173,34 @@ namespace Game
         {
             Debug.Log("long press finished");
 
-            GameSignals.INPUT_LONG_PRESS.Dispatch();
+            if (!_useNetwork)
+            {
+                GameSignals.INPUT_LONG_PRESS.Dispatch();
 
-            var signal = GameSignals.INPUT_GENERIC;
-            signal.AddParameter(GameParams.INPUT_TYPE, GestureType.LONG_PRESS);
-            signal.Dispatch();
-            signal.ClearParameters();
+                var signal = GameSignals.INPUT_GENERIC;
+                signal.AddParameter(GameParams.INPUT_TYPE, GestureType.LONG_PRESS);
+                signal.Dispatch();
+                signal.ClearParameters();
+            }
         }
 
         void OnPinchRecognized(TKPinchRecognizer r)
         {
             Debug.Log("pinch recognized");
 
-            GameSignals.INPUT_PINCH.Dispatch();
+            if (!_useNetwork)
+            {
+                GameSignals.INPUT_PINCH.Dispatch();
 
-            var signal = GameSignals.INPUT_GENERIC;
-            signal.AddParameter(GameParams.INPUT_TYPE, GestureType.PINCH);
-            signal.Dispatch();
-            signal.ClearParameters();
+                var signal = GameSignals.INPUT_GENERIC;
+                signal.AddParameter(GameParams.INPUT_TYPE, GestureType.PINCH);
+                signal.Dispatch();
+                signal.ClearParameters();
+            }
         }
         #endregion
 
+        #region spawners
         public IEnumerator SpawnSwipeEffect(Vector3 start, Vector3 end, float duration, float speed)
         {
             var direction = start - end;
@@ -199,5 +226,6 @@ namespace Game
             if (effectsRoot) prefab.transform.SetParent(effectsRoot);
             yield return null;
         }
+        #endregion
     }
 }

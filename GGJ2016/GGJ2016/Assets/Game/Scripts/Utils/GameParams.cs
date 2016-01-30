@@ -15,6 +15,7 @@ namespace Game {
         public const string INPUT_SWIPE_DIR = "SwipeDirection";
         public const string INPUT_TYPE = "GestureInputType";
         public const string INPUT_SWIPE_PAYLOAD = "SwipePayload";
+        public const string INPUT_TAP_POS = "TapPosition";
 
         // debug
         public const string DEBUG_TEXT = "DebugText";
