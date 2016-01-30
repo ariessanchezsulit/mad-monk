@@ -6,5 +6,5 @@ namespace Game {
 	public class SystemRoot : MonoBehaviour {
 		
 	}
-		
+
 }
