@@ -9,6 +9,8 @@ using System.Collections.Generic;
 public enum EScene {
 	System,
 	Monsters,
+	UI,
+	Bubbles,
 };
 
 namespace Game {
