@@ -46,6 +46,10 @@ namespace Game {
 		private float scaleDuration;
 		private float totalTime;
 
+		// fade
+		[SerializeField]
+		private float fadeDuration = 2.0f;
+
 		[SerializeField]
 		[Range(0, 1)]
 		private int direction = -1;
@@ -64,6 +68,7 @@ namespace Game {
 			this.axis = this.transform.right;
 			this.Move();
 			this.Scale();
+			this.StartCoroutine(this.Fade());
 		}
 
 		private void OnEnable() {
@@ -90,6 +95,9 @@ namespace Game {
 				this.Move();
 				this.Scale();
 			}
+			//else {
+			//	this.Fade();
+			//}
 		}
 
 		private void LateUpdate() {
@@ -132,8 +140,21 @@ namespace Game {
 			this.transform.localScale = new Vector3(scale, scale, scale);
 		}
 
+		private IEnumerator Fade() {
+			//this.totalTime += Time.fixedDeltaTime;
+			//float fade = (this.totalTime / this.fadeDuration) - this.fadeDuration;
+			//Debug.LogFormat("Fade... {0}\n", fade);
+			while (!this.popped) {
+				yield return null;
+			}
+
+			yield return new WaitForSeconds(this.fadeDuration);
+			GameObject.Destroy(this.gameObject);
+		}
+
 		public void Pop() {
 			this.popped = true;
+			this.totalTime = 0;
 		}
 
 		public EBubbleType BubbleType {
