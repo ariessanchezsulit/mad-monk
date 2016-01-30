@@ -9,6 +9,8 @@ namespace Game
         // prefabs for gesture effects
         [SerializeField]
         private GameObject swipeFXPrefab;
+        [SerializeField]
+        private GameObject tapFXPrefab;
 
         [SerializeField]
         private AnimationCurve curve;
@@ -100,7 +102,8 @@ namespace Game
         void OnTapRecognized(TKTapRecognizer r)
         {
             Debug.Log("tap recognized");
-
+            var worldPos = Camera.main.ScreenToWorldPoint(r.touchLocation());
+            StartCoroutine(SpawnTapEffect(worldPos));
             GameSignals.INPUT_TAP.Dispatch();
         }
 
@@ -140,6 +143,12 @@ namespace Game
             }
 
             DestroyObject(prefab);
+        }
+
+        private IEnumerator SpawnTapEffect(Vector3 position)
+        {
+            var prefab = Instantiate(tapFXPrefab, position, Quaternion.identity) as GameObject;
+            yield return null;
         }
     }
 }
