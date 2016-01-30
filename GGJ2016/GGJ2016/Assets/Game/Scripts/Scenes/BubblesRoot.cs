@@ -44,7 +44,7 @@ namespace Game {
 				// difficulty
 				int difficulty = this.CalculateProbability();
 
-				for (int i = 0; i < difficulty; i++) {
+				for (int i = 0; i <= difficulty; i++) {
 					GameObject bubble = (GameObject)GameObject.Instantiate(template.gameObject, template.position, template.rotation);
 					bubble.transform.SetParent(template.parent);
 					bubble.transform.localPosition = template.localPosition;
