@@ -12,9 +12,9 @@ namespace Game {
 
 	public class WorldRoot : GameScene {
 
-		//protected override void Awake() {
-			//base.Awake();
-		//}
+		protected override void Awake() {
+			base.Awake();
+		}
 
 	}
 
