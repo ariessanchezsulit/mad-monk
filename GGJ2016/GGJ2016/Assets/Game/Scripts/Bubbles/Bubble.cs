@@ -32,18 +32,14 @@ namespace Game {
 
 		[SerializeField]
 		private EBubbleType bubbleType;
-
-		// fade
-		[SerializeField]
-		private float fadeDuration = 2.0f;
-
+		
 		private bool popped = false;
 
 		private void Awake() {
+			this.GetComponent<BubbleFade>().enabled = false;
 		}
 
 		private void Start() {
-			this.StartCoroutine(this.Fade());
 		}
 
 		private void OnEnable() {
@@ -55,18 +51,10 @@ namespace Game {
 			signal.Dispatch();
 		}
 
-		private IEnumerator Fade() {
-			while (!this.popped) {
-				yield return null;
-			}
-
-			yield return new WaitForSeconds(5.0f);
-			GameObject.Destroy(this.gameObject);
-		}
-
 		public void Pop() {
 			this.popped = true;
 			this.GetComponent<BubbleMove>().enabled = false;
+			this.GetComponent<BubbleFade>().enabled = true;
 		}
 
 		public EBubbleType BubbleType {

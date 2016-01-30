@@ -46,13 +46,13 @@ namespace Game {
 			});
 
 			GameSignals.INPUT_TAP.AddListener((ISignalParameters parameters) => {
-				Debug.LogFormat("Tap\n");
+				//Debug.LogFormat("Tap\n");
 				this.PopBubble(EBubbleType.Tap);
 			});
 
 			GameSignals.INPUT_SWIPE.AddListener((ISignalParameters parameters) => {
 				TKSwipeDirection direction = (TKSwipeDirection)parameters.GetParameter(GameParams.INPUT_SWIPE_DIR);
-				Debug.LogFormat("Swipe {0}\n", direction);
+				//Debug.LogFormat("Swipe {0}\n", direction);
 				switch (direction) {
 				case TKSwipeDirection.Up:
 					this.PopBubble(EBubbleType.SwipeUp);
@@ -70,12 +70,12 @@ namespace Game {
 			});
 
 			GameSignals.INPUT_PINCH.AddListener((ISignalParameters parameters) => {
-				Debug.LogFormat("Pinch\n");
+				//Debug.LogFormat("Pinch\n");
 				this.PopBubble(EBubbleType.Pinch);
 			});
 
 			GameSignals.INPUT_LONG_PRESS.AddListener((ISignalParameters parameters) => {
-				Debug.LogFormat("LongPress\n");
+				//Debug.LogFormat("LongPress\n");
 				this.PopBubble(EBubbleType.LongPress);
 			});
 		}

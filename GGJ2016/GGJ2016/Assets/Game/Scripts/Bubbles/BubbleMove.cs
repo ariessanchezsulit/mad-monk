@@ -11,10 +11,7 @@ namespace Game {
 
 	public class BubbleMove : MonoBehaviour {
 		public const float CAP_Y_POSITION = 400.0f;
-
-		[SerializeField]
-		private EBubbleType bubbleType;
-
+		
 		[SerializeField]
 		private float speed = 200.0f;
 		[SerializeField]
