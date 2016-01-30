@@ -13,6 +13,10 @@ namespace Game {
 
         // gestures
         public const string INPUT_SWIPE_DIR = "SwipeDirection";
+        public const string INPUT_TYPE = "GestureInputType";
+
+        // debug
+        public const string DEBUG_TEXT = "DebugText";
 	}
 
 }

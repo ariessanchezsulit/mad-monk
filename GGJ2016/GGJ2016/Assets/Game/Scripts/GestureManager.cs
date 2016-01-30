@@ -4,6 +4,14 @@ using Common.Signal;
 
 namespace Game
 {
+    public enum GestureType
+    {
+        TAP,
+        SWIPE,
+        PINCH,
+        LONG_PRESS
+    }
+
     public class GestureManager : MonoBehaviour
     {
         [SerializeField]
@@ -100,6 +108,12 @@ namespace Game
             signal.AddParameter(GameParams.INPUT_SWIPE_DIR, r.completedSwipeDirection);
             signal.Dispatch();
             signal.ClearParameters();
+
+            var genericSignal = GameSignals.INPUT_GENERIC;
+            genericSignal.AddParameter(GameParams.INPUT_TYPE, GestureType.SWIPE);
+            genericSignal.AddParameter(GameParams.INPUT_SWIPE_DIR, r.completedSwipeDirection);
+            genericSignal.Dispatch();
+            genericSignal.ClearParameters();
         }
 
         void OnTapRecognized(TKTapRecognizer r)
@@ -108,6 +122,11 @@ namespace Game
             var worldPos = Camera.main.ScreenToWorldPoint(r.touchLocation());
             StartCoroutine(SpawnTapEffect(worldPos));
             GameSignals.INPUT_TAP.Dispatch();
+
+            var signal = GameSignals.INPUT_GENERIC;
+            signal.AddParameter(GameParams.INPUT_TYPE, GestureType.TAP);
+            signal.Dispatch();
+            signal.ClearParameters();
         }
 
         void OnLongTapRecognized(TKLongPressRecognizer r)
@@ -120,6 +139,11 @@ namespace Game
             Debug.Log("long press finished");
 
             GameSignals.INPUT_LONG_PRESS.Dispatch();
+
+            var signal = GameSignals.INPUT_GENERIC;
+            signal.AddParameter(GameParams.INPUT_TYPE, GestureType.LONG_PRESS);
+            signal.Dispatch();
+            signal.ClearParameters();
         }
 
         void OnPinchRecognized(TKPinchRecognizer r)
@@ -127,6 +151,11 @@ namespace Game
             Debug.Log("pinch recognized");
 
             GameSignals.INPUT_PINCH.Dispatch();
+
+            var signal = GameSignals.INPUT_GENERIC;
+            signal.AddParameter(GameParams.INPUT_TYPE, GestureType.PINCH);
+            signal.Dispatch();
+            signal.ClearParameters();
         }
         #endregion
 
