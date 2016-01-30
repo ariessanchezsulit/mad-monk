@@ -12,9 +12,9 @@ public class MonsterManager : MonoBehaviour
 	private Monster CurrentMonster;
 
 	[SerializeField]
-	private float MonsterMaxYPosition;
+	private float TowerTopY;
 	[SerializeField]
-	private float MonsterMinYPosition;
+	private float TowerBottomY;
 
 	void Awake()
 	{
@@ -68,7 +68,7 @@ public class MonsterManager : MonoBehaviour
 		CurrentMonster.Rise ();
 
 		// check if monster has reached character
-		bool isMonsterOnTop = CurrentMonster.YPosition >= MonsterMinYPosition;
+		bool isMonsterOnTop = CurrentMonster.YPosition >= TowerTopY;
 		if (isMonsterOnTop) {
 			// dispatch end game
 			GameSignals.END_GAME.Dispatch ();
@@ -81,7 +81,8 @@ public class MonsterManager : MonoBehaviour
 		CurrentMonster.Lower ();
 
 		// check if monster has been defeated
-		bool monsterDefeated = CurrentMonster.YPosition < MonsterMinYPosition;
+		bool monsterDefeated = CurrentMonster.YPosition < TowerBottomY;
+		Debug.Log ("monsterDefeated: " + monsterDefeated);
 		if (monsterDefeated) {
 			// kill current monster
 			HideCurrentMonster();
@@ -98,20 +99,20 @@ public class MonsterManager : MonoBehaviour
 	private void ShowNextMonster()
 	{
 		// incremenet monster index
-		CurrentMonsterIndex = CurrentMonsterIndex == Monsters.Length ? 0 : ++CurrentMonsterIndex;
+		CurrentMonsterIndex = (CurrentMonsterIndex == Monsters.Length - 1) ? 0 : ++CurrentMonsterIndex;
 
 		// update current monster
 		CurrentMonster = Monsters[CurrentMonsterIndex];
 
 		// set monster speed
-		float towerHeight = MonsterMaxYPosition - MonsterMinYPosition;
+		float towerHeight = TowerTopY - TowerBottomY;
 		int heightInBubbles = CurrentMonster.BubblesToReachTop + CurrentMonster.BubblesToReachBottom;
 		float monsterSpeed = towerHeight / ((float)heightInBubbles);
 		CurrentMonster.SetSpeed (monsterSpeed);
 
 		// show monster
-		Vector3 initialPosition = MonsterMinYPosition;
-		initialPosition.y = MonsterMinYPosition + (monsterSpeed * CurrentMonster.BubblesToReachBottom);
+		Vector3 initialPosition = Vector3.zero;
+		initialPosition.y = TowerBottomY + (monsterSpeed * CurrentMonster.BubblesToReachBottom);
 		CurrentMonster.Show (initialPosition);
 	}
 

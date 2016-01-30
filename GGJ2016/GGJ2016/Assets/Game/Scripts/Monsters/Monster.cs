@@ -34,6 +34,7 @@ public class Monster : MonoBehaviour
 	{
 		get
 		{
+			Debug.Log (MyT.localPosition.y);
 			return MyT.localPosition.y;
 		}
 	}
@@ -58,14 +59,14 @@ public class Monster : MonoBehaviour
 	public void Rise()
 	{
 		Vector3 pos = MyT.localPosition;
-		pos.y -= Speed;
+		pos.y += Speed;
 		MyT.localPosition = pos;
 	}
 
 	public void Lower()
 	{
 		Vector3 pos = MyT.localPosition;
-		pos.y += Speed;
+		pos.y -= Speed;
 		MyT.localPosition = pos;
 	}
 }
