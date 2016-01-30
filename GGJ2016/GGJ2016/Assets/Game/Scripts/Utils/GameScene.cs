@@ -8,6 +8,7 @@ using System.Collections.Generic;
 
 public enum EScene {
 	System,
+	//World,
 	Monsters,
 	UI,
 	Bubbles,
