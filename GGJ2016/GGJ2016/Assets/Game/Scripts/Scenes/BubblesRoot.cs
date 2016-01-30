@@ -24,19 +24,74 @@ namespace Game {
 		[Range(1, 100)]
 		private int[] numberOfBubbles;
 
+		[SerializeField]
+		private List<Bubble> bubbles;
+
 		protected override void Awake() {
 			base.Awake();
+
 			GameSignals.ON_BUBBLE_ADDED_TO_POOL.AddListener((ISignalParameters parameters) => {
-				this.pool.Add((GameObject)parameters.GetParameter(GameParams.BUBBLE));
+				//this.pool.Add((GameObject)parameters.GetParameter(GameParams.BUBBLE));
+				GameObject obj = (GameObject)parameters.GetParameter(GameParams.BUBBLE);
+				Bubble bubble = obj.GetComponent<Bubble>();
+				this.bubbles.Add(bubble);
 			});
 
 			GameSignals.ON_BUBBLE_REMOVED_TO_POOL.AddListener((ISignalParameters parameters) => {
-				this.pool.Remove((GameObject)parameters.GetParameter(GameParams.BUBBLE));
+				//this.pool.Remove((GameObject)parameters.GetParameter(GameParams.BUBBLE));
+				GameObject obj = (GameObject)parameters.GetParameter(GameParams.BUBBLE);
+				Bubble bubble = obj.GetComponent<Bubble>();
+				this.bubbles.Remove(bubble);
+				GameObject.Destroy(obj);
+			});
+
+			GameSignals.INPUT_TAP.AddListener((ISignalParameters parameters) => {
+				Debug.LogFormat("Tap\n");
+				this.PopBubble(EBubbleType.Tap);
+			});
+
+			GameSignals.INPUT_SWIPE.AddListener((ISignalParameters parameters) => {
+				TKSwipeDirection direction = (TKSwipeDirection)parameters.GetParameter(GameParams.INPUT_SWIPE_DIR);
+				Debug.LogFormat("Swipe {0}\n", direction);
+				switch (direction) {
+				case TKSwipeDirection.Up:
+					this.PopBubble(EBubbleType.SwipeUp);
+					break;
+				case TKSwipeDirection.Down:
+					this.PopBubble(EBubbleType.SwipeDown);
+					break;
+				case TKSwipeDirection.Left:
+					this.PopBubble(EBubbleType.SwipeLeft);
+					break;
+				case TKSwipeDirection.Right:
+					this.PopBubble(EBubbleType.SwipeRight);
+					break;
+				}
+			});
+
+			GameSignals.INPUT_PINCH.AddListener((ISignalParameters parameters) => {
+				Debug.LogFormat("Pinch\n");
+				this.PopBubble(EBubbleType.Pinch);
+			});
+
+			GameSignals.INPUT_LONG_PRESS.AddListener((ISignalParameters parameters) => {
+				Debug.LogFormat("LongPress\n");
+				this.PopBubble(EBubbleType.LongPress);
 			});
 		}
 
 		private void Start() {
 			this.StartCoroutine(this.GenerateBubble());
+		}
+
+		private void PopBubble(EBubbleType type) {
+			if (this.bubbles.Exists(b => b.BubbleType == type)) {
+				Bubble bubble = this.bubbles.Find(b => b.BubbleType == type);
+				bubble.Pop();
+
+				// remove to bubbles
+				this.bubbles.Remove(bubble);
+			}
 		}
 
 		private IEnumerator GenerateBubble()  {

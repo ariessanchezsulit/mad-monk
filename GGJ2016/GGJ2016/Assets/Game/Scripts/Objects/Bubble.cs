@@ -8,10 +8,18 @@ using Common;
 using Common.Signal;
 
 public enum EBubbleType {
-	Red,
-	Orange,
-	Yellow,
-	Green,
+	Invalid		= 0x0,
+
+	SwipeUp		= 0x1 << 0,
+	SwipeDown	= 0x1 << 1,
+	SwipeLeft	= 0x1 << 2,
+	SwipeRight	= 0x1 << 3,
+
+	Tap			= 0x1 << 4,
+	Pinch		= 0x1 << 5,
+	LongPress	= 0x1 << 6,
+
+	Max			= 0x1 << 7,
 };
 
 namespace Game {
@@ -45,6 +53,8 @@ namespace Game {
 		private Vector3 axis;
 		private Vector3 pos;
 
+		private bool popped = false;
+
 		private void Awake() {
 			this.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
 		}
@@ -62,34 +72,36 @@ namespace Game {
 			this.frequency = URandom.Range(5.0f, 5.0f);
 			this.magnitude = URandom.Range(50.0f, 100.0f);
 			this.direction = URandom.Range(0, 2);
-			//float ranScale = URandom.Range(1.0f, 2.5f);
-			//this.transform.localScale = new Vector3(ranScale, ranScale, ranScale);
-			this.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
-
+			
 			this.totalTime = 0.0f;
 			this.scaleDuration = URandom.Range(0.15f, 0.35f);
+			this.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
+
+			this.bubbleType = (EBubbleType)(0x1 << URandom.Range(0, 7));
 
 			// add to pool
-			//Signal signal = GameSignals.ON_BUBBLE_ADDED_TO_POOL;
-			//signal.AddParameter(GameParams.BUBBLE, this.gameObject);
-			//signal.Dispatch();
+			Signal signal = GameSignals.ON_BUBBLE_ADDED_TO_POOL;
+			signal.AddParameter(GameParams.BUBBLE, this.gameObject);
+			signal.Dispatch();
 		}
 
 		private void FixedUpdate() {
-			this.Move();
-			this.Scale();
+			if (!this.popped) {
+				this.Move();
+				this.Scale();
+			}
 		}
 
 		private void LateUpdate() {
 			//Debug.LogFormat("Bubble::LateUpdate Y:{0}\n", this.transform.position.y);
 			if (this.transform.position.y >= CAP_Y_POSITION) {
 				// pop here
-				GameObject.Destroy(this.gameObject);
+				//GameObject.Destroy(this.gameObject);
 
 				// remove to pool
-				//Signal signal = GameSignals.ON_BUBBLE_REMOVED_TO_POOL;
-				//signal.AddParameter(GameParams.BUBBLE, this.gameObject);
-				//signal.Dispatch();
+				Signal signal = GameSignals.ON_BUBBLE_REMOVED_TO_POOL;
+				signal.AddParameter(GameParams.BUBBLE, this.gameObject);
+				signal.Dispatch();
 			}
 		}
 
@@ -118,6 +130,10 @@ namespace Game {
 			}
 
 			this.transform.localScale = new Vector3(scale, scale, scale);
+		}
+
+		public void Pop() {
+			this.popped = true;
 		}
 
 		public EBubbleType BubbleType {
