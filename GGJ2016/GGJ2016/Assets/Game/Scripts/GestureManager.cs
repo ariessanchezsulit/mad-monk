@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Common.Signal;
 
 namespace Game
 {
@@ -12,7 +13,8 @@ namespace Game
 
         private void Start()
         {
-            OnGameStarted();
+            // for testing
+            OnGameStarted(null);
         }
 
         void InitializeRecognizers()
@@ -42,19 +44,31 @@ namespace Game
             TouchKit.removeAllGestureRecognizers();
         }
 
-        void OnGameStarted()
+        void OnGameStarted(ISignalParameters parameters)
         {
             InitializeRecognizers();
+        }
+
+        void OnGameEnded(ISignalParameters parameters)
+        {
+            DisableRecognizers();
         }
 
         void OnSwipeRecognized(TKSwipeRecognizer r)
         {
             Debug.Log("swipe recognized");
+
+            var signal = GameSignals.INPUT_SWIPE;
+            signal.AddParameter(GameParams.INPUT_SWIPE_DIR, r.completedSwipeDirection);
+            signal.Dispatch();
+            signal.ClearParameters();
         }
 
         void OnTapRecognized(TKTapRecognizer r)
         {
             Debug.Log("tap recognized");
+
+            GameSignals.INPUT_TAP.Dispatch();
         }
 
         void OnLongTapRecognized(TKLongPressRecognizer r)
@@ -65,11 +79,15 @@ namespace Game
         void OnLongTapFinished(TKLongPressRecognizer r)
         {
             Debug.Log("long press finished");
+
+            GameSignals.INPUT_LONG_PRESS.Dispatch();
         }
 
         void OnPinchRecognized(TKPinchRecognizer r)
         {
             Debug.Log("pinch recognized");
+
+            GameSignals.INPUT_PINCH.Dispatch();
         }
     }
 }
