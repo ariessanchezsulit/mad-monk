@@ -26,6 +26,13 @@ namespace Game {
 
 		protected override void Awake() {
 			base.Awake();
+			GameSignals.ON_BUBBLE_ADDED_TO_POOL.AddListener((ISignalParameters parameters) => {
+				this.pool.Add((GameObject)parameters.GetParameter(GameParams.BUBBLE));
+			});
+
+			GameSignals.ON_BUBBLE_REMOVED_TO_POOL.AddListener((ISignalParameters parameters) => {
+				this.pool.Remove((GameObject)parameters.GetParameter(GameParams.BUBBLE));
+			});
 		}
 
 		private void Start() {
@@ -43,9 +50,9 @@ namespace Game {
 				Transform template = this.pool.Tempalte().transform;
 
 				// difficulty
-				int difficulty = this.CalculateProbability();
+				int numberOfBubbles = this.CalculateProbability();
 
-				for (int i = 0; i <= difficulty; i++) {
+				for (int i = 0; i <= numberOfBubbles; i++) {
 					GameObject bubble = this.pool.Get();
 					bubble.transform.SetParent(template.parent);
 					bubble.transform.localPosition = template.localPosition;

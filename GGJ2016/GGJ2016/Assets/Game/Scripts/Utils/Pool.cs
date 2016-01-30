@@ -26,7 +26,7 @@ namespace Game {
 		
 		private Dictionary<GameObject, bool> poolMap;
 
-		private void Awaka() {
+		private void Awake() {
 			Assertion.AssertNotNull(this.template);
 			this.poolMap = new Dictionary<GameObject, bool>();
 		}
@@ -57,17 +57,32 @@ namespace Game {
 			return bubble;
 		}
 
+		private void AddToMap(GameObject pool, bool isActive) {
+			if (this.poolMap.ContainsKey(pool)) {
+				this.poolMap[pool] = isActive;
+			}
+			else {
+				this.poolMap.Add(pool, isActive);
+			}
+		}
+
 		public void Add(GameObject pool) {
-			if (this.activePool.Exists(p => p.Equals(pool))) {
-				this.activePool.Remove(pool);
+			//if (this.activePool.Exists(p => p.Equals(pool))) {
+			//	this.activePool.Remove(pool);
+			//}
+
+			if (!this.activePool.Exists(p => p.Equals(pool))) {
+				this.activePool.Add(pool);
 			}
 
 			if (this.inActivePool.Exists(p => p.Equals(pool))) {
 				this.inActivePool.Remove(pool);
 			}
 
-			this.activePool.Add(pool);
-			this.poolMap[pool] = true;
+			//this.activePool.Add(pool);
+			this.AddToMap(pool, true);
+			pool.transform.position = this.template.transform.position;
+			pool.SetActive(true);
 		}
 
 		public void Remove(GameObject pool) {
@@ -75,15 +90,22 @@ namespace Game {
 				this.activePool.Remove(pool);
 			}
 
-			if (this.inActivePool.Exists(p => p.Equals(pool))) {
-				this.inActivePool.Remove(pool);
+			//if (this.inActivePool.Exists(p => p.Equals(pool))) {
+			//	this.inActivePool.Remove(pool);
+			//}
+
+			if (!this.inActivePool.Exists(p => p.Equals(pool))) {
+				this.inActivePool.Add(pool);
 			}
 
-			this.inActivePool.Add(pool);
-			this.poolMap[pool] = false;
+			//this.inActivePool.Add(pool);
+			this.AddToMap(pool, false);
+			pool.transform.position = this.template.transform.position;
+			pool.SetActive(false);
 		}
 
 		public GameObject Get() {
+			/*
 			if (this.inActivePool.Count <= 0) {
 				return this.Create();
 			}
@@ -100,6 +122,9 @@ namespace Game {
 
 			Assertion.Assert(false);
 			return null;
+			*/
+
+			return this.Create();
 		}
 
 		public GameObject Tempalte() {

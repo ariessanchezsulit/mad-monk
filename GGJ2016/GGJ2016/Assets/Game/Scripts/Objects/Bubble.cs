@@ -54,6 +54,11 @@ namespace Game {
 			this.direction = URandom.Range(0, 2);
 			float ranScale = URandom.Range(1.0f, 2.5f);
 			this.transform.localScale = new Vector3(ranScale, ranScale, ranScale);
+
+			// add to pool
+			//Signal signal = GameSignals.ON_BUBBLE_ADDED_TO_POOL;
+			//signal.AddParameter(GameParams.BUBBLE, this.gameObject);
+			//signal.Dispatch();
 		}
 
 		private void FixedUpdate() {
@@ -65,6 +70,11 @@ namespace Game {
 			if (this.transform.position.y >= CAP_Y_POSITION) {
 				// pop here
 				GameObject.Destroy(this.gameObject);
+
+				// remove to pool
+				//Signal signal = GameSignals.ON_BUBBLE_REMOVED_TO_POOL;
+				//signal.AddParameter(GameParams.BUBBLE, this.gameObject);
+				//signal.Dispatch();
 			}
 		}
 
