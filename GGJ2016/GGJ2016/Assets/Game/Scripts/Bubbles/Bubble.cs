@@ -18,8 +18,8 @@ public enum EBubbleType {
 	SwipeRight	= 0x1 << 3,
 
 	Tap			= 0x1 << 4,
-	Pinch		= 0x1 << 5,
-	LongPress	= 0x1 << 6,
+	LongPress	= 0x1 << 5,
+	Pinch		= 0x1 << 6,
 
 	Max			= 0x1 << 7,
 };
@@ -57,27 +57,39 @@ namespace Game {
 		[SerializeField]
 		private Image[] colors;
 
-		private Dictionary<EBubbleColor, Image> images;
+		[SerializeField]
+		private Image[] gestures;
+
+		private Dictionary<EBubbleColor, Image> colorTextures;
+		private Dictionary<EBubbleType, Image> gestureTextures;
 
 		private bool popped = false;
 
 		private void Awake() {
 			Assertion.Assert(this.colors.Length > 0);
+			Assertion.Assert(this.gestures.Length > 0);
 			this.GetComponent<BubbleFade>().enabled = false;
-			this.images = new Dictionary<EBubbleColor, Image>();
+			this.colorTextures = new Dictionary<EBubbleColor, Image>();
+			this.gestureTextures = new Dictionary<EBubbleType, Image>();
 
 			// populate bubbles
 			for (int i = 0; i < this.colors.Length; i++) {
-				this.images.Add((EBubbleColor)(0x1 << i), this.colors[i]);
+				this.colorTextures.Add((EBubbleColor)(0x1 << i), this.colors[i]);
+			}
+
+			// popilate gestures
+			for (int i = 0; i < this.gestures.Length; i++) {
+				this.gestureTextures.Add((EBubbleType)(0x1 << i), this.gestures[i]);
 			}
 		}
 
 		private void Start() {
-			this.images[this.bubbleColor].gameObject.SetActive(true);
+			this.colorTextures[this.bubbleColor].gameObject.SetActive(true);
+			this.gestureTextures[this.BubbleType].gameObject.SetActive(true);
 		}
 
 		private void OnEnable() {
-			this.bubbleType = (EBubbleType)(0x1 << URandom.Range(0, 7));
+			this.bubbleType = (EBubbleType)(0x1 << URandom.Range(0, 6));
 			this.bubbleColor = (EBubbleColor)(0x1 << URandom.Range(0, 8));
 
 			// add to pool

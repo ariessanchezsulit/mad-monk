@@ -23,6 +23,7 @@ namespace Game {
 		[SerializeField]
 		private float scaleDuration;
 		private float totalTime;
+		private float capScale;
 
 		[SerializeField]
 		[Range(0, 1)]
@@ -56,6 +57,7 @@ namespace Game {
 			this.totalTime = 0.0f;
 			this.scaleDuration = URandom.Range(0.15f, 0.35f);
 			this.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
+			this.capScale = URandom.Range(1.0f, 2.0f);
 		}
 
 		private void FixedUpdate() {
@@ -92,8 +94,8 @@ namespace Game {
 			float scale = this.totalTime / this.scaleDuration;
 
 			// max
-			if (scale > 2.5f) {
-				scale = 2.5f;
+			if (scale >= this.capScale) {
+				scale = this.capScale;
 			}
 
 			this.transform.localScale = new Vector3(scale, scale, scale);
