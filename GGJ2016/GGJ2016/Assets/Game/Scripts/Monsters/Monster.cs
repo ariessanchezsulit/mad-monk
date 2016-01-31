@@ -8,6 +8,9 @@ public class Monster : MonoBehaviour
 
 	private float Speed;
 
+	[SerializeField]
+	private Transform RendererT;
+
 	private GameObject _MyGo;
 	private GameObject MyGo
 	{
@@ -34,19 +37,19 @@ public class Monster : MonoBehaviour
 	{
 		get
 		{
-			return MyT.localPosition.y;
+			return RendererT.localPosition.y;
 		}
 		set
 		{
-			Vector3 localPos = MyT.localPosition;
+			Vector3 localPos = RendererT.localPosition;
 			localPos.y = value;
-			MyT.localPosition = localPos;
+			RendererT.localPosition = localPos;
 		}
 	}
 
 	public void Show(Vector3 initialPosition)
 	{
-		MyT.localPosition = initialPosition;
+		RendererT.localPosition = initialPosition;
 		MyGo.SetActive(true);
 	}
 
@@ -63,15 +66,15 @@ public class Monster : MonoBehaviour
 
 	public void Rise()
 	{
-		Vector3 pos = MyT.localPosition;
+		Vector3 pos = RendererT.localPosition;
 		pos.y += Speed;
-		MyT.localPosition = pos;
+		RendererT.localPosition = pos;
 	}
 
 	public void Lower()
 	{
-		Vector3 pos = MyT.localPosition;
+		Vector3 pos = RendererT.localPosition;
 		pos.y -= Speed;
-		MyT.localPosition = pos;
+		RendererT.localPosition = pos;
 	}
 }

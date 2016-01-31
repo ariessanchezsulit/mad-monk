@@ -61,16 +61,21 @@ namespace Game {
 				GameObject.Destroy(obj);
 			});
 
-			GameSignals.INPUT_GENERIC.AddListener((ISignalParameters parameters) => {
-				GestureType gesture = (GestureType)parameters.GetParameter(GameParams.INPUT_TYPE);
-				if (gesture == GestureType.SWIPE) {
-					SwipePayload swipePayload = (SwipePayload)parameters.GetParameter(GameParams.INPUT_SWIPE_PAYLOAD);
-					this.PopBubble(gesture, swipePayload.direction);
-				}
-				else {
-					this.PopBubble(gesture);
-				}
-			});
+			GameSignals.INPUT_GENERIC.AddListener((ISignalParameters parameters) => ProcessInput(parameters, true));
+
+			GameSignals.INPUT_NETWORK.AddListener ((ISignalParameters parameters) => ProcessInput(parameters, false));
+		}
+
+		private void ProcessInput(ISignalParameters parameters, bool isLocal)
+		{
+			GestureType gesture = (GestureType)parameters.GetParameter(GameParams.INPUT_TYPE);
+			if (gesture == GestureType.SWIPE) {
+				SwipePayload swipePayload = (SwipePayload)parameters.GetParameter(GameParams.INPUT_SWIPE_PAYLOAD);
+				this.PopBubble(gesture, swipePayload.direction);
+			}
+			else {
+				this.PopBubble(gesture);
+			}
 		}
 
 		private void LateUpdate() {
