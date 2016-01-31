@@ -11,7 +11,7 @@ public enum EScene {
 	World,
 	Monsters,
 	UI,
-	Bubbles,
+	//Bubbles,
 };
 
 namespace Game {
