@@ -13,9 +13,13 @@ namespace Game {
 
 		// fade
 		[SerializeField]
-		private float fadeDuration = 2.0f;
+		private float fadeDuration = 1.0f;
+
+		[SerializeField]
+		private GameObject explosion;
 
 		private void Awake() {
+			Assertion.AssertNotNull(this.explosion);
 		}
 
 		private void OnEnable() {
@@ -27,6 +31,8 @@ namespace Game {
 		}
 
 		private IEnumerator Fade() {
+			yield return null;
+			this.explosion.SetActive(true);
 			yield return new WaitForSeconds(this.fadeDuration);
 
 			// dispatch bubble popped
