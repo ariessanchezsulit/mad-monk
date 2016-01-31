@@ -16,6 +16,9 @@ namespace Game {
 			base.Awake();
 		}
 
+		private void Start() {
+			GameSignals.ON_PLAY_BGM.Dispatch();
+		}
 	}
 
 }

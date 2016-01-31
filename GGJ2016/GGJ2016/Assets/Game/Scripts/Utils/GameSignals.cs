@@ -34,6 +34,7 @@ namespace Game {
 		public static readonly Signal ON_BUBBLE_REMOVED_TO_POOL = new Signal("OnBubbleRemovedToPool");
 
 		public static readonly Signal ON_PLAY_SFX = new Signal("OnPlaySFX");
+		public static readonly Signal ON_PLAY_BGM = new Signal("OnPlayBGM");
 	}
 
 }
