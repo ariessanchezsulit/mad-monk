@@ -85,6 +85,7 @@ namespace Game {
 
 		private void Start() {
 			this.colorTextures[this.bubbleColor].gameObject.SetActive(true);
+			//this.colorTextures[this.BubbleColor].transform.localScale = new Vector3(30.0f, 30.0f, 30.0f);
 			this.gestureTextures[this.BubbleType].gameObject.SetActive(true);
 		}
 

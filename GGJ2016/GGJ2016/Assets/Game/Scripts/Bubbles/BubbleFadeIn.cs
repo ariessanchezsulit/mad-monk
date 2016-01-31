@@ -21,15 +21,15 @@ namespace Game {
 		private float totalTime = 0.0f;
 
 		private void Awake() {
-			Assertion.AssertNotNull(this.image);
+			//Assertion.AssertNotNull(this.image);
 		}
 
 		private void OnEnable() {
-			this.StartCoroutine(this.Fade());
+			//this.StartCoroutine(this.Fade());
 		}
 
 		private void OnDisable() {
-			this.StopAllCoroutines();
+			//this.StopAllCoroutines();
 		}
 
 		private IEnumerator Fade() {
