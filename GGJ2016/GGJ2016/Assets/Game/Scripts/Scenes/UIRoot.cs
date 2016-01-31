@@ -68,9 +68,14 @@ namespace Game {
 				currHighScore = KillCount;
 				PlayerPrefs.SetInt ("HighScore", KillCount);
 			}
-			ResultsHighestKillCountText.text = currHighScore.ToString("N0");
+			ResultsHighestKillCountText.text = string.Format("Best: {0}", currHighScore.ToString("N0"));
 
 			ResultsScreen.SetActive (true);
+		}
+
+		public void QuitGame()
+		{
+			Application.Quit ();
 		}
 	}
 
