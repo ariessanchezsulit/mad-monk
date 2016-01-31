@@ -132,7 +132,7 @@ namespace Game
             }
             else
             {
-                DispatchNetworkSwipe(new SwipePayload()
+                DispatchGenericSwipe(new SwipePayload()
                 {
                     velocity = r.swipeVelocity,
                     startScreenPos = r.startPoint,
@@ -143,7 +143,7 @@ namespace Game
         }
 
         // don't use in gesture client controller
-        public void DispatchNetworkSwipe(SwipePayload payload)
+        public void DispatchGenericSwipe(SwipePayload payload)
         {
             //Debug.Log("Network Swipe detected");
 
@@ -166,12 +166,12 @@ namespace Game
             }
             else
             {
-                DispatchNetworkTap(r.touchLocation());
+                DispatchGenericTap(r.touchLocation());
             }
         }
 
         // don't use in gesture client controller
-        public void DispatchNetworkTap(Vector2 position)
+        public void DispatchGenericTap(Vector2 position)
         {
             //Debug.Log("Network Tap detected");
 
@@ -194,7 +194,9 @@ namespace Game
             if (!_useNetwork)
             {
                 GameSignals.INPUT_LONG_PRESS.Dispatch();
-
+            }
+            else
+            {
                 var signal = GameSignals.INPUT_GENERIC;
                 signal.AddParameter(GameParams.INPUT_TYPE, GestureType.LONG_PRESS);
                 signal.Dispatch();
@@ -209,7 +211,9 @@ namespace Game
             if (!_useNetwork)
             {
                 GameSignals.INPUT_PINCH.Dispatch();
-
+            }
+            else
+            { 
                 var signal = GameSignals.INPUT_GENERIC;
                 signal.AddParameter(GameParams.INPUT_TYPE, GestureType.PINCH);
                 signal.Dispatch();
