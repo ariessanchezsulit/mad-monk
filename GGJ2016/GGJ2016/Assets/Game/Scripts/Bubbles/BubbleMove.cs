@@ -26,7 +26,7 @@ namespace Game {
 		private float scaleDuration;
 		private float totalTime;
 		private float capScale;
-		private float scaleDown = 0.025f;
+		private float scaleDown = 0.020f;
 
 		[SerializeField]
 		[Range(0, 1)]
