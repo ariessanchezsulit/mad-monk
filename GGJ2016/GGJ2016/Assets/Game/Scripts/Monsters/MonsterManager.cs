@@ -68,6 +68,12 @@ public class MonsterManager : MonoBehaviour
 		// raise monster
 		CurrentMonster.Rise ();
 
+		Signal monsterSummonedSignal = GameSignals.ON_MONSTER_SUMMONED;
+		monsterSummonedSignal.ClearParameters ();
+		monsterSummonedSignal.AddParameter (GameParams.MONSTER_HP, CurrentMonster.HitPoints);
+		monsterSummonedSignal.AddParameter (GameParams.MONSTER_MAX_HP, CurrentMonster.MaxHitPoints);
+		monsterSummonedSignal.Dispatch ();
+
 		// check if monster has reached character
 		bool isMonsterOnTop = CurrentMonster.YPosition >= CurrentMonster.TowerTopY;
 		if (isMonsterOnTop) {
@@ -87,6 +93,12 @@ public class MonsterManager : MonoBehaviour
 		
 		// lower monster
 		CurrentMonster.Lower ();
+
+		Signal monsterHitSignal = GameSignals.ON_MONSTER_HIT;
+		monsterHitSignal.ClearParameters ();
+		monsterHitSignal.AddParameter (GameParams.MONSTER_HP, CurrentMonster.HitPoints);
+		monsterHitSignal.AddParameter (GameParams.MONSTER_MAX_HP, CurrentMonster.MaxHitPoints);
+		monsterHitSignal.Dispatch ();
 
 		// check if monster has been defeated
 		bool monsterDefeated = CurrentMonster.YPosition < CurrentMonster.TowerBottomY;
@@ -122,6 +134,11 @@ public class MonsterManager : MonoBehaviour
 		Vector3 initialPosition = Vector3.zero;
 		initialPosition.y = CurrentMonster.TowerBottomY + (monsterSpeed * CurrentMonster.BubblesToReachBottom);
 		CurrentMonster.Show (initialPosition);
+
+		Signal monsterShowSignal = GameSignals.ON_MONSTER_SHOWN;
+		monsterShowSignal.ClearParameters ();
+		monsterShowSignal.AddParameter (GameParams.MONSTER_TYPE, CurrentMonster.Type);
+		monsterShowSignal.Dispatch ();
 	}
 
 	private void HideCurrentMonster()

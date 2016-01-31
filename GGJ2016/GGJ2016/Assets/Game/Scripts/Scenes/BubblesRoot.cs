@@ -149,6 +149,7 @@ namespace Game {
 		}
 
 		private void OnStartGame(ISignalParameters @params) {
+			this.StopAllCoroutines ();
 			this.StartCoroutine(this.GenerateBubble());
 			this.started = true;
 			this.totalTime = 0.0f;

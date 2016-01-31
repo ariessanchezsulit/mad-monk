@@ -13,6 +13,9 @@ namespace Game {
 		public static readonly Signal ON_CLICKED_BUTTON = new Signal("OnClickedButton");
 		public static readonly Signal ON_BUBBLE_POPPED = new Signal("OnBubblePopped");
 		public static readonly Signal ON_BUBBLE_MISSED = new Signal("OnBubbleMissed");
+		public static readonly Signal ON_MONSTER_SHOWN = new Signal("OnMonsterShown");
+		public static readonly Signal ON_MONSTER_HIT = new Signal("OnMonsterHit");
+		public static readonly Signal ON_MONSTER_SUMMONED = new Signal("OnMonsterSummoned");
 		public static readonly Signal ON_MONSTER_DEAD = new Signal("OnMonsterDead");
 		public static readonly Signal START_GAME = new Signal("StartGame");
 		public static readonly Signal END_GAME = new Signal("EndGame");
@@ -29,6 +32,9 @@ namespace Game {
 
         public static readonly Signal ON_BUBBLE_ADDED_TO_POOL = new Signal("OnBubbleAddedToPool");
 		public static readonly Signal ON_BUBBLE_REMOVED_TO_POOL = new Signal("OnBubbleRemovedToPool");
+
+		public static readonly Signal ON_PLAY_SFX = new Signal("OnPlaySFX");
+		public static readonly Signal ON_PLAY_BGM = new Signal("OnPlayBGM");
 	}
 
 }
