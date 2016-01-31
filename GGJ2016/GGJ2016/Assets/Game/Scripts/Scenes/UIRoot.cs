@@ -41,6 +41,8 @@ namespace Game {
 		[SerializeField]
 		private Text ResultsHighestKillCountText;
 
+		private AudioListener AudioListener;
+
 		protected override void Awake() {
 			base.Awake();
 
@@ -49,6 +51,13 @@ namespace Game {
 			GameSignals.ON_MONSTER_SHOWN.AddListener (OnMonsterShown);
 			GameSignals.ON_MONSTER_DEAD.AddListener (OnMonsterDead);
 			GameSignals.END_GAME.AddListener (OnGameEnd);
+		}
+
+		void Start()
+		{
+			AudioListener = GameObject.FindObjectOfType<AudioListener> ();
+
+			GameSignals.START_GAME.Dispatch ();
 		}
 
 		void OnDestroy()
@@ -119,6 +128,16 @@ namespace Game {
 		public void QuitGame()
 		{
 			Application.Quit ();
+		}
+
+		public void TogglePause(bool shouldPause)
+		{
+			Time.timeScale = shouldPause ? 0 : 1;
+		}
+
+		public void ToggleSound(bool enableSound)
+		{
+			AudioListener.enabled = enableSound;
 		}
 	}
 
