@@ -34,8 +34,13 @@ public class Monster : MonoBehaviour
 	{
 		get
 		{
-			Debug.Log (MyT.localPosition.y);
 			return MyT.localPosition.y;
+		}
+		set
+		{
+			Vector3 localPos = MyT.localPosition;
+			localPos.y = value;
+			MyT.localPosition = localPos;
 		}
 	}
 
