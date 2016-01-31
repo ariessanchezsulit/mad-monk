@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using URandom = UnityEngine.Random;
 
 using System;
@@ -25,6 +26,7 @@ namespace Game {
 		private float scaleDuration;
 		private float totalTime;
 		private float capScale;
+		private float scaleDown = 0.025f;
 
 		[SerializeField]
 		[Range(0, 1)]
@@ -36,51 +38,29 @@ namespace Game {
 		[SerializeField]
 		private TrailRenderer trail;
 
+		// cache image
+		private RectTransform cachedTransform;
+
 		private void Awake() {
 			Assertion.AssertNotNull(this.trail);
 			this.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
+			this.cachedTransform = this.GetComponent<RectTransform>();
 		}
 
 		private void Start() {
-			this.pos = this.transform.position;
-			this.axis = this.transform.right;
+			this.pos = this.cachedTransform.position;
+			this.axis = this.cachedTransform.right;
 			this.Move();
 			this.Scale();
 		}
 
 		private void OnEnable() {
-			// random values
-			if (Platform.IsMobileIOS() || Platform.IsMobileAndroid()) {
-				float scaler = 4.0f;
-
-				this.speed 			= URandom.Range(600.0f * 1.0f, 1200.0f * 1.0f);
-				this.frequency 		= URandom.Range(5.0f * 1.0f, 5.0f * 1.0f);
-				this.magnitude 		= URandom.Range(100.0f, 350.0f);
-				this.direction 		= URandom.Range(0, 2);
-				this.capPositionY 	= 2000.0f;
-
-				/*
-				this.speed *= scaler;
-				this.frequency *= scaler;
-				this.magnitude *= scaler;
-				this.capPositionY *= scaler;
-				*/
-			}
-			else {
-				this.speed = URandom.Range(100.0f, 500.0f);
-				this.frequency = URandom.Range(5.0f, 5.0f);
-				this.magnitude = URandom.Range(50.0f, 100.0f);
-				this.direction = URandom.Range(0, 2);
-
-				if (Platform.IsDesktop()) {
-					this.capPositionY = 800.0f;
-				}
-				else {
-					this.capPositionY = 400.0f;
-				}
-			}
-
-
+			this.speed = URandom.Range(100.0f * scaleDown, 500.0f * scaleDown);
+			this.frequency = URandom.Range(5.0f, 5.0f);
+			this.magnitude = URandom.Range(50.0f * scaleDown, 100.0f * scaleDown);
+			this.direction = URandom.Range(0, 2);
+			this.capPositionY = 400.0f * scaleDown;
+			
 			this.totalTime = 0.0f;
 			this.scaleDuration = URandom.Range(0.15f, 0.35f);
 			this.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
@@ -108,12 +88,12 @@ namespace Game {
 
 		private void Move() {
 			this.pos += this.transform.up * Time.fixedDeltaTime  * this.speed;
-
+			
 			if (this.direction > 0) {
-				this.transform.position = this.pos + this.axis * Mathf.Sin(Time.time * this.frequency) * this.magnitude;
+				this.cachedTransform.position = this.pos + this.axis * Mathf.Sin(Time.time * this.frequency) * this.magnitude;
 			}
 			else {
-				this.transform.position = this.pos + this.axis * -Mathf.Sin(Time.time * this.frequency) * this.magnitude;
+				this.cachedTransform.position = this.pos + this.axis * -Mathf.Sin(Time.time * this.frequency) * this.magnitude;
 			}
 		}
 
@@ -129,7 +109,7 @@ namespace Game {
 			this.transform.localScale = new Vector3(scale, scale, scale);
 
 			// scale trail
-			float maxTrailSize = 30.0f;
+			float maxTrailSize = 30.0f * this.scaleDown;
 			scale = this.totalTime / maxTrailSize;
 
 			// max
@@ -138,6 +118,7 @@ namespace Game {
 			}
 
 			this.trail.startWidth = maxTrailSize;
+			this.trail.endWidth = 0.0f;
 		}
 	}
 

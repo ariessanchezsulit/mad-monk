@@ -11,7 +11,7 @@ using Common.Signal;
 
 namespace Game {
 
-	public class BubblesRoot : GameScene {
+	public class BubblesRoot : MonoBehaviour {
 
 		[SerializeField]
 		private Pool pool;
@@ -40,9 +40,7 @@ namespace Game {
 		[SerializeField]
 		private List<Bubble> bubbles;
 
-		protected override void Awake() {
-			base.Awake();
-
+		private void Awake() {
 			GameSignals.START_GAME.AddListener (OnStartGame);
 			GameSignals.END_GAME.AddListener (OnEndGame);
 
