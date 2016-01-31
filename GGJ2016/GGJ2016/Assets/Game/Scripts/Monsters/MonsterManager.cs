@@ -12,6 +12,8 @@ public class MonsterManager : MonoBehaviour
 	private Monster CurrentMonster;
 
 	[SerializeField]
+	private float MonkEatenY;
+	[SerializeField]
 	private float TowerTopY;
 	[SerializeField]
 	private float TowerBottomY;
@@ -77,6 +79,8 @@ public class MonsterManager : MonoBehaviour
 		bool isMonsterOnTop = CurrentMonster.YPosition >= TowerTopY;
 		if (isMonsterOnTop) {
 			IsActive = false;
+
+			CurrentMonster.YPosition = MonkEatenY;
 
 			// dispatch end game
 			GameSignals.END_GAME.Dispatch ();

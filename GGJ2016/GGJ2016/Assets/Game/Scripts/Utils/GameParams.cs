@@ -19,7 +19,11 @@ namespace Game {
 
         // debug
         public const string DEBUG_TEXT = "DebugText";
-	}
+
+        // network
+        public const string NETWORK_CLIENT_ID = "NetworkClientId";
+
+    }
 
 }
 
