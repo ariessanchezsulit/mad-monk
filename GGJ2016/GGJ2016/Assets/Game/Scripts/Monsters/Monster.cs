@@ -6,30 +6,23 @@ public class Monster : MonoBehaviour
 	public int BubblesToReachBottom;
 	public int BubblesToReachTop;
 
+	public float MonkEatenY;
+	public float TowerTopY;
+	public float TowerBottomY;
+
 	private float Speed;
 
 	[SerializeField]
 	private Transform RendererT;
 
-	private GameObject _MyGo;
-	private GameObject MyGo
+	private GameObject _RendererGo;
+	private GameObject RendererGo
 	{
 		get
 		{
-			if (_MyGo == null)
-				_MyGo = gameObject;
-			return _MyGo;
-		}
-	}
-
-	private Transform _MyT;
-	private Transform MyT
-	{
-		get
-		{
-			if (_MyT == null)
-				_MyT = transform;
-			return _MyT;
+			if (_RendererGo == null)
+				_RendererGo = RendererT.gameObject;
+			return _RendererGo;
 		}
 	}
 
@@ -50,13 +43,13 @@ public class Monster : MonoBehaviour
 	public void Show(Vector3 initialPosition)
 	{
 		RendererT.localPosition = initialPosition;
-		MyGo.SetActive(true);
+		RendererGo.SetActive(true);
 	}
 
 	public void Hide()
 	{
 		// TODO play die
-		MyGo.SetActive(false);
+		RendererGo.SetActive(false);
 	}
 
 	public void SetSpeed(float speed)
