@@ -87,6 +87,8 @@ namespace Game {
 			MonsterType monsterType = (MonsterType)parameters.GetParameter(GameParams.MONSTER_TYPE);
 			GaugeIcon = MonsterIcons.Find (mi => mi.Type == monsterType).Icon;
 			GaugeIcon.SetActive (true);
+
+			UpdateGauge (parameters);
 		}
 
 		public void RestartGame()

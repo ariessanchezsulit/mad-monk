@@ -51,7 +51,7 @@ public class Monster : MonoBehaviour
 		{
 			Vector3 localPos = RendererT.localPosition;
 			localPos.y = value;
-			RendererT.localPosition = localPos;
+			Slide (localPos);
 		}
 	}
 
@@ -60,7 +60,6 @@ public class Monster : MonoBehaviour
 		StopAllCoroutines ();
 
 		HitPoints = BubblesToReachBottom;
-//		RendererT.localPosition = initialPosition;
 		RendererGo.SetActive(true);
 
 		Slide (initialPosition);
@@ -68,9 +67,6 @@ public class Monster : MonoBehaviour
 
 	public void Hide()
 	{
-		// TODO play die
-//		RendererGo.SetActive(false);
-
 		Vector3 hiddenPos = RendererT.localPosition;
 		hiddenPos.y = HiddenY;
 		SlideThenHide (hiddenPos);
@@ -114,7 +110,6 @@ public class Monster : MonoBehaviour
 		Vector3 pos = RendererT.localPosition;
 		pos.y += Speed;
 		Slide (pos);
-//		RendererT.localPosition = pos;
 	}
 
 	public void Lower()
@@ -123,6 +118,5 @@ public class Monster : MonoBehaviour
 		Vector3 pos = RendererT.localPosition;
 		pos.y -= Speed;
 		Slide (pos);
-//		RendererT.localPosition = pos;
 	}
 }

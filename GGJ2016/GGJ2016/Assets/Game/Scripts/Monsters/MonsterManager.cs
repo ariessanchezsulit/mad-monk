@@ -135,10 +135,12 @@ public class MonsterManager : MonoBehaviour
 		initialPosition.y = CurrentMonster.TowerBottomY + (monsterSpeed * CurrentMonster.BubblesToReachBottom);
 		CurrentMonster.Show (initialPosition);
 
-		Signal monsterShowSignal = GameSignals.ON_MONSTER_SHOWN;
-		monsterShowSignal.ClearParameters ();
-		monsterShowSignal.AddParameter (GameParams.MONSTER_TYPE, CurrentMonster.Type);
-		monsterShowSignal.Dispatch ();
+		Signal monsterShownSignal = GameSignals.ON_MONSTER_SHOWN;
+		monsterShownSignal.ClearParameters ();
+		monsterShownSignal.AddParameter (GameParams.MONSTER_TYPE, CurrentMonster.Type);
+		monsterShownSignal.AddParameter (GameParams.MONSTER_HP, CurrentMonster.HitPoints);
+		monsterShownSignal.AddParameter (GameParams.MONSTER_MAX_HP, CurrentMonster.MaxHitPoints);
+		monsterShownSignal.Dispatch ();
 	}
 
 	private void HideCurrentMonster()
