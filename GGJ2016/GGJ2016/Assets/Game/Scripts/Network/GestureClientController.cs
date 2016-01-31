@@ -140,6 +140,7 @@ namespace Game
 
             var signal = GameSignals.INPUT_NETWORK;
             signal.AddParameter(GameParams.INPUT_TYPE, GestureType.SWIPE);
+            signal.AddParameter(GameParams.INPUT_SWIPE_PAYLOAD, payload);
             signal.Dispatch();
             signal.ClearParameters();
         }
