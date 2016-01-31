@@ -22,6 +22,12 @@ namespace Game {
 		private AudioSource source;
 
 		[SerializeField]
+		private AudioSource bgmSource;
+
+		[SerializeField]
+		private AudioClip bgm;
+
+		[SerializeField]
 		private AudioClip monsterStart;
 
 		[SerializeField]
@@ -40,6 +46,8 @@ namespace Game {
 
 		private void Awake() {
 			Assertion.AssertNotNull(this.source);
+			Assertion.AssertNotNull(this.bgmSource);
+			Assertion.AssertNotNull(this.bgm);
 			Assertion.AssertNotNull(this.monsterStart);
 			Assertion.AssertNotNull(this.monster001);
 			Assertion.AssertNotNull(this.monster002);
@@ -56,10 +64,12 @@ namespace Game {
 
 		private void Start() {
 			GameSignals.ON_PLAY_SFX.AddListener(this.OnPlaySFX);
+			GameSignals.ON_PLAY_BGM.AddListener(this.OnPlayBGM);
 		}
 
 		private void OnDestroy() {
 			GameSignals.ON_PLAY_SFX.RemoveListener(this.OnPlaySFX);
+			GameSignals.ON_PLAY_BGM.RemoveListener(this.OnPlayBGM);
 		}
 
 		#region Signals
@@ -68,6 +78,12 @@ namespace Game {
 			ESfx sfx = (ESfx)parameters.GetParameter(GameParams.AUDIO_ID);
 			this.source.clip = this.audioMap[sfx];
 			this.source.Play();
+		}
+
+		private void OnPlayBGM(ISignalParameters parameters) {
+			this.bgmSource.clip = this.bgm;
+			this.bgmSource.loop = true;
+			this.bgmSource.Play();
 		}
 
 		#endregion

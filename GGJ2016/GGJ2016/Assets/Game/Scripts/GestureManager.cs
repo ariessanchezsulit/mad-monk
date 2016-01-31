@@ -123,7 +123,7 @@ namespace Game
                 start = new Vector3(start.x, start.y, 0);
                 end = new Vector3(end.x, end.y, 0);
 
-                StartCoroutine(SpawnSwipeEffect(start, end, 0.5f, r.swipeVelocity));
+                StartCoroutine(SpawnSwipeEffect(start, end, 0.5f, r.swipeVelocity, Color.white));
 
                 var signal = GameSignals.INPUT_SWIPE;
                 signal.AddParameter(GameParams.INPUT_SWIPE_DIR, r.completedSwipeDirection);
@@ -161,7 +161,7 @@ namespace Game
             if (!_useNetwork)
             {
                 var worldPos = Camera.main.ScreenToWorldPoint(r.touchLocation());
-                StartCoroutine(SpawnTapEffect(worldPos));
+                StartCoroutine(SpawnTapEffect(worldPos, Color.white));
                 GameSignals.INPUT_TAP.Dispatch();
             }
             else
@@ -223,10 +223,15 @@ namespace Game
         #endregion
 
         #region spawners
-        public IEnumerator SpawnSwipeEffect(Vector3 start, Vector3 end, float duration, float speed)
+        public IEnumerator SpawnSwipeEffect(Vector3 start, Vector3 end, float duration, float speed, Color c)
         {
             var direction = start - end;
             var prefab = Instantiate(swipeFXPrefab, start, Quaternion.LookRotation(direction)) as GameObject;
+
+            var effect = prefab.GetComponent<GestureEffect>();
+            effect.tint = c;
+            effect.UpdateColor();
+
             if (effectsRoot) prefab.transform.SetParent(effectsRoot);
             float elapsedTime = 0f;
 
@@ -242,9 +247,14 @@ namespace Game
             DestroyObject(prefab);
         }
 
-        public IEnumerator SpawnTapEffect(Vector3 position)
+        public IEnumerator SpawnTapEffect(Vector3 position, Color c)
         {
             var prefab = Instantiate(tapFXPrefab, position, Quaternion.identity) as GameObject;
+
+            var effect = prefab.GetComponent<GestureEffect>();
+            effect.tint = c;
+            effect.UpdateColor();
+
             if (effectsRoot) prefab.transform.SetParent(effectsRoot);
             yield return null;
         }

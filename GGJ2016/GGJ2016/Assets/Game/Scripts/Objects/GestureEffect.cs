@@ -2,14 +2,15 @@
 using System.Collections;
 
 public class GestureEffect : MonoBehaviour {
+    public Color tint;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    public void UpdateColor()
+    {
+        var systems = GetComponentsInChildren<ParticleSystem>();
+
+        foreach(var system in systems)
+        {
+            system.startColor = tint;
+        }
+    }
 }

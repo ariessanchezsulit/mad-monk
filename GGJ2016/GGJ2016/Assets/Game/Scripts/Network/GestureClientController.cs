@@ -11,6 +11,8 @@ namespace Game
         private GestureManager _instance;
         [SerializeField]
         private int clientId;
+        [SerializeField]
+        private Color clientColor;
 
         void Awake()
         {
@@ -26,8 +28,19 @@ namespace Game
             }
 
             clientId = GetComponent<NetworkIdentity>().GetInstanceID();
+
+            clientColor = new Color(
+                Remap(Random.Range(0, 255), 0, 255, 0, 1),
+                Remap(Random.Range(0, 255), 0, 255, 0, 1),
+                Remap(Random.Range(0, 255), 0, 255, 0, 1),
+                1);
             
             GameSignals.INPUT_GENERIC.AddListener(OnInputReceived);
+        }
+
+        public float Remap(float value, float from1, float to1, float from2, float to2)
+        {
+            return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
         }
 
         void OnDestroy()
@@ -110,7 +123,7 @@ namespace Game
 
             if (_instance)
             {
-                StartCoroutine(_instance.SpawnSwipeEffect(start, end, 0.5f, payload.velocity));
+                StartCoroutine(_instance.SpawnSwipeEffect(start, end, 0.5f, payload.velocity, clientColor));
             }
         }
 
@@ -119,7 +132,7 @@ namespace Game
             var worldPos = Camera.main.ScreenToWorldPoint(position);
             if(_instance)
             {
-                StartCoroutine(_instance.SpawnTapEffect(worldPos));
+                StartCoroutine(_instance.SpawnTapEffect(worldPos, clientColor));
             }
         }
         #endregion
