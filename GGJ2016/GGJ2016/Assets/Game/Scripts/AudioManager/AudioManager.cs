@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Common.Signal;
 
 public enum ESfx {
+	Start,
 	Monster001,
 	Monster002,
 	ShowBubble,
@@ -19,6 +20,9 @@ namespace Game {
 
 		[SerializeField]
 		private AudioSource source;
+
+		[SerializeField]
+		private AudioClip monsterStart;
 
 		[SerializeField]
 		private AudioClip monster001;
@@ -36,12 +40,14 @@ namespace Game {
 
 		private void Awake() {
 			Assertion.AssertNotNull(this.source);
+			Assertion.AssertNotNull(this.monsterStart);
 			Assertion.AssertNotNull(this.monster001);
 			Assertion.AssertNotNull(this.monster002);
 			Assertion.AssertNotNull(this.showBubble);
 			Assertion.AssertNotNull(this.popBubble);
 
 			this.audioMap = new Dictionary<ESfx, AudioClip>();
+			this.audioMap[ESfx.Start] = this.monsterStart;
 			this.audioMap[ESfx.Monster001] = this.monster001;
 			this.audioMap[ESfx.Monster002] = this.monster002;
 			this.audioMap[ESfx.ShowBubble] = this.showBubble;

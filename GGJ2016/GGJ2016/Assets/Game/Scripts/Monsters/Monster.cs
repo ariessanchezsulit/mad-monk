@@ -54,6 +54,13 @@ public class Monster : MonoBehaviour
 		}
 	}
 
+	void OnEnable()
+	{
+		Signal signal = GameSignals.ON_PLAY_SFX;
+		signal.AddParameter(GameParams.AUDIO_ID, ESfx.Start);
+		signal.Dispatch();
+	}
+
 	public void Show(Vector3 initialPosition)
 	{
 		HitPoints = BubblesToReachBottom;
