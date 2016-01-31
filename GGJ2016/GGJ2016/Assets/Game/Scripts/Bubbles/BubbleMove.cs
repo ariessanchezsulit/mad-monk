@@ -71,7 +71,13 @@ namespace Game {
 				this.frequency = URandom.Range(5.0f, 5.0f);
 				this.magnitude = URandom.Range(50.0f, 100.0f);
 				this.direction = URandom.Range(0, 2);
-				this.capPositionY = 400.0f;
+
+				if (Platform.IsDesktop()) {
+					this.capPositionY = 800.0f;
+				}
+				else {
+					this.capPositionY = 400.0f;
+				}
 			}
 
 
