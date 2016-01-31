@@ -27,7 +27,8 @@ namespace Game {
 
         // network
         public const string NETWORK_CLIENT_ID = "NetworkClientId";
-
+        public const string NETWORK_HOST_IP = "NetworkHostIP";
+        public const string NETWORK_STATUS = "NetworkStatus";
     }
 
 }
