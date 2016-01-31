@@ -7,9 +7,8 @@ namespace Game {
 		void Start()
 		{
 			LoadSceneAdditive (EScene.World);
-			LoadSceneAdditive (EScene.Bubbles);
+			//LoadSceneAdditive (EScene.Bubbles);
 			LoadSceneAdditive (EScene.UI);
-			LoadSceneAdditive (EScene.Monsters);
 		}
 	}
 

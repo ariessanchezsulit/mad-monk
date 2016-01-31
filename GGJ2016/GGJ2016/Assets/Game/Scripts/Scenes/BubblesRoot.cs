@@ -11,7 +11,7 @@ using Common.Signal;
 
 namespace Game {
 
-	public class BubblesRoot : GameScene {
+	public class BubblesRoot : MonoBehaviour {
 
 		[SerializeField]
 		private Pool pool;
@@ -40,9 +40,7 @@ namespace Game {
 		[SerializeField]
 		private List<Bubble> bubbles;
 
-		protected override void Awake() {
-			base.Awake();
-
+		private void Awake() {
 			GameSignals.START_GAME.AddListener (OnStartGame);
 			GameSignals.END_GAME.AddListener (OnEndGame);
 
@@ -61,16 +59,21 @@ namespace Game {
 				GameObject.Destroy(obj);
 			});
 
-			GameSignals.INPUT_GENERIC.AddListener((ISignalParameters parameters) => {
-				GestureType gesture = (GestureType)parameters.GetParameter(GameParams.INPUT_TYPE);
-				if (gesture == GestureType.SWIPE) {
-					SwipePayload swipePayload = (SwipePayload)parameters.GetParameter(GameParams.INPUT_SWIPE_PAYLOAD);
-					this.PopBubble(gesture, swipePayload.direction);
-				}
-				else {
-					this.PopBubble(gesture);
-				}
-			});
+			GameSignals.INPUT_GENERIC.AddListener((ISignalParameters parameters) => ProcessInput(parameters, true));
+
+			GameSignals.INPUT_NETWORK.AddListener ((ISignalParameters parameters) => ProcessInput(parameters, false));
+		}
+
+		private void ProcessInput(ISignalParameters parameters, bool isLocal)
+		{
+			GestureType gesture = (GestureType)parameters.GetParameter(GameParams.INPUT_TYPE);
+			if (gesture == GestureType.SWIPE) {
+				SwipePayload swipePayload = (SwipePayload)parameters.GetParameter(GameParams.INPUT_SWIPE_PAYLOAD);
+				this.PopBubble(gesture, swipePayload.direction);
+			}
+			else {
+				this.PopBubble(gesture);
+			}
 		}
 
 		private void LateUpdate() {

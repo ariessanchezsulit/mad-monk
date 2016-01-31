@@ -6,27 +6,23 @@ public class Monster : MonoBehaviour
 	public int BubblesToReachBottom;
 	public int BubblesToReachTop;
 
+	public float MonkEatenY;
+	public float TowerTopY;
+	public float TowerBottomY;
+
 	private float Speed;
 
-	private GameObject _MyGo;
-	private GameObject MyGo
-	{
-		get
-		{
-			if (_MyGo == null)
-				_MyGo = gameObject;
-			return _MyGo;
-		}
-	}
+	[SerializeField]
+	private Transform RendererT;
 
-	private Transform _MyT;
-	private Transform MyT
+	private GameObject _RendererGo;
+	private GameObject RendererGo
 	{
 		get
 		{
-			if (_MyT == null)
-				_MyT = transform;
-			return _MyT;
+			if (_RendererGo == null)
+				_RendererGo = RendererT.gameObject;
+			return _RendererGo;
 		}
 	}
 
@@ -34,26 +30,26 @@ public class Monster : MonoBehaviour
 	{
 		get
 		{
-			return MyT.localPosition.y;
+			return RendererT.localPosition.y;
 		}
 		set
 		{
-			Vector3 localPos = MyT.localPosition;
+			Vector3 localPos = RendererT.localPosition;
 			localPos.y = value;
-			MyT.localPosition = localPos;
+			RendererT.localPosition = localPos;
 		}
 	}
 
 	public void Show(Vector3 initialPosition)
 	{
-		MyT.localPosition = initialPosition;
-		MyGo.SetActive(true);
+		RendererT.localPosition = initialPosition;
+		RendererGo.SetActive(true);
 	}
 
 	public void Hide()
 	{
 		// TODO play die
-		MyGo.SetActive(false);
+		RendererGo.SetActive(false);
 	}
 
 	public void SetSpeed(float speed)
@@ -63,15 +59,15 @@ public class Monster : MonoBehaviour
 
 	public void Rise()
 	{
-		Vector3 pos = MyT.localPosition;
+		Vector3 pos = RendererT.localPosition;
 		pos.y += Speed;
-		MyT.localPosition = pos;
+		RendererT.localPosition = pos;
 	}
 
 	public void Lower()
 	{
-		Vector3 pos = MyT.localPosition;
+		Vector3 pos = RendererT.localPosition;
 		pos.y -= Speed;
-		MyT.localPosition = pos;
+		RendererT.localPosition = pos;
 	}
 }
