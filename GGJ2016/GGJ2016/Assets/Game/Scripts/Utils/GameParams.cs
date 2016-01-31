@@ -17,6 +17,11 @@ namespace Game {
         public const string INPUT_SWIPE_PAYLOAD = "SwipePayload";
         public const string INPUT_TAP_POS = "TapPosition";
 
+		// monsters
+		public const string MONSTER_TYPE = "MonsterType";
+		public const string MONSTER_HP = "MonsterHP";
+		public const string MONSTER_MAX_HP = "MonsterMaxHP";
+
         // debug
         public const string DEBUG_TEXT = "DebugText";
 
