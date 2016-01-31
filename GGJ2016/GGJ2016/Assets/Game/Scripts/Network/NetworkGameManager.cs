@@ -16,17 +16,19 @@ namespace Game {
     {
         public ConnectionType connType;
         public string hostIp;
-        
+                
         void Awake()
         {
             GameSignals.INPUT_HOST_IP.AddListener(OnInputHostIP);
             GameSignals.START_GAME.AddListener(OnGameStarted);
+            GameSignals.END_GAME.AddListener(OnGameEnded);
         }
 
         void OnDestroy()
         {
             GameSignals.INPUT_HOST_IP.RemoveListener(OnInputHostIP);
             GameSignals.START_GAME.RemoveListener(OnGameStarted);
+            GameSignals.END_GAME.RemoveListener(OnGameEnded);
         }
 
         void Start()
@@ -112,6 +114,20 @@ namespace Game {
         void OnGameStarted(ISignalParameters parameters)
         {
             if (connType == ConnectionType.SERVER) CreateLocalGame();
+        }
+
+        void OnGameEnded(ISignalParameters parameters)
+        {
+            if (connType == ConnectionType.SERVER)
+            {
+                this.StopHost();
+                Debug.Log("host stopped");
+
+                var networkSignal = GameSignals.NETWORK_STATUS_SIGNAL;
+                networkSignal.AddParameter(GameParams.NETWORK_STATUS, "Host Stopped");
+                networkSignal.Dispatch();
+                networkSignal.ClearParameters();
+            }
         }
 
         void OnInputHostIP(ISignalParameters parameters)

@@ -49,6 +49,7 @@ namespace Game
             networkStatusDisplay.text = string.Format("Connection status: {0}", status);
 
             if (status.Contains("success")) OnJoinSuccess();
+            else if (status.Contains("Stopped")) OnHostStopped();
             else OnJoinFailed();
         }
 
@@ -58,6 +59,11 @@ namespace Game
             stopButton.SetActive(true);
 
             GameSignals.START_GAME.Dispatch();
+        }
+
+        void OnHostStopped()
+        {
+            StopConnection();
         }
 
         void OnJoinFailed()
