@@ -55,7 +55,7 @@ namespace Game {
 
 				this.speed 			= URandom.Range(600.0f * 1.0f, 1200.0f * 1.0f);
 				this.frequency 		= URandom.Range(5.0f * 1.0f, 5.0f * 1.0f);
-				this.magnitude 		= URandom.Range(300.0f, 500.0f);
+				this.magnitude 		= URandom.Range(100.0f, 350.0f);
 				this.direction 		= URandom.Range(0, 2);
 				this.capPositionY 	= 2000.0f;
 
