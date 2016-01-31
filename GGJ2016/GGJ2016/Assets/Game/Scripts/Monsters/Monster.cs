@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Game;
+using Common.Signal;
 
 public enum MonsterType
 {
@@ -52,11 +54,22 @@ public class Monster : MonoBehaviour
 		}
 	}
 
+	void OnEnable()
+	{
+		Signal signal = GameSignals.ON_PLAY_SFX;
+		signal.AddParameter(GameParams.AUDIO_ID, ESfx.Start);
+		signal.Dispatch();
+	}
+
 	public void Show(Vector3 initialPosition)
 	{
 		HitPoints = BubblesToReachBottom;
 		RendererT.localPosition = initialPosition;
 		RendererGo.SetActive(true);
+
+		Signal signal = GameSignals.ON_PLAY_SFX;
+		signal.AddParameter(GameParams.AUDIO_ID, UnityEngine.Random.Range(0, 2) == 0 ? ESfx.Monster001 : ESfx.Monster002);
+		signal.Dispatch();
 	}
 
 	public void Hide()
