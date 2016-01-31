@@ -23,6 +23,7 @@ namespace Game {
         public static readonly Signal INPUT_GENERIC = new Signal("genericinput");
         public static readonly Signal DEBUG_LOG = new Signal("debuglog");
         public static readonly Signal INPUT_NETWORK = new Signal("networkinput");
+        public static readonly Signal NETWORK_CLIENT_ID = new Signal("networkclientid");
 
         public static readonly Signal ON_BUBBLE_ADDED_TO_POOL = new Signal("OnBubbleAddedToPool");
 		public static readonly Signal ON_BUBBLE_REMOVED_TO_POOL = new Signal("OnBubbleRemovedToPool");

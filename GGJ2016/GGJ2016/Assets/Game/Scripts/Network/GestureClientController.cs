@@ -55,10 +55,6 @@ namespace Game
                         textToDisplay = string.Format("{0} Gesture detected!", type.ToString());
                         break;
                     case GestureType.SWIPE:
-                        //var dir = (TKSwipeDirection)parameters.GetParameter(GameParams.INPUT_SWIPE_DIR);
-                        //textToDisplay = string.Format("Swipe detected! direction is {0}", dir.ToString());
-                        //SpawnSwipeEffect(payload);
-
                         var payload = (SwipePayload)parameters.GetParameter(GameParams.INPUT_SWIPE_PAYLOAD);
 
                         // server already dispatches this on its side
@@ -69,11 +65,28 @@ namespace Game
 
                         textToDisplay = string.Format("Swipe detected! direction: {0}, startPos: {1}, endPos: {2}, velocity: {3}", payload.direction.ToString(), payload.startScreenPos, payload.endScreenPos, payload.velocity);
                         break;
+                    case GestureType.PINCH:
+                        if (!isServer)
+                            CmdDispatchPinch();
+
+                        textToDisplay = string.Format("{0} Gesture detected!", type.ToString());
+                        break;
+                    case GestureType.LONG_PRESS:
+                        if (!isServer)
+                            CmdDispatchLongPress();
+
+                        textToDisplay = string.Format("{0} Gesture detected!", type.ToString());
+                        break;
                     default:
                         textToDisplay = string.Format("{0} Gesture detected!", type.ToString());
                         break;
                 }
-                //DispatchText(textToDisplay);
+
+                //display only to client screen
+                if(!isServer)
+                    DispatchText(textToDisplay);
+
+                //display only to server screen
                 CmdDispatchTextToServer(textToDisplay);
             }
         }
@@ -86,6 +99,7 @@ namespace Game
             sig.ClearParameters();
         }
 
+        #region spawn effects wrappers
         void SpawnSwipeEffect(SwipePayload payload)
         {
             var start = Camera.main.ScreenToWorldPoint(payload.startScreenPos);
@@ -108,6 +122,7 @@ namespace Game
                 StartCoroutine(_instance.SpawnTapEffect(worldPos));
             }
         }
+        #endregion
 
         #region command wrappers
         [Command]
@@ -115,7 +130,7 @@ namespace Game
         {
             //string clientId = GetComponent<NetworkIdentity>().GetInstanceID().ToString();
             var sig = GameSignals.DEBUG_LOG;
-            sig.AddParameter(GameParams.DEBUG_TEXT, string.Format("[client#{0}]: {1}", clientId, text));
+            sig.AddParameter(GameParams.DEBUG_TEXT, string.Format("<color=orange>[client#{0}]</color>: {1}", clientId, text));
             sig.Dispatch();
             sig.ClearParameters();
         }
@@ -140,6 +155,8 @@ namespace Game
 
             var signal = GameSignals.INPUT_NETWORK;
             signal.AddParameter(GameParams.INPUT_TYPE, GestureType.SWIPE);
+            signal.AddParameter(GameParams.INPUT_SWIPE_PAYLOAD, payload);
+            signal.AddParameter(GameParams.NETWORK_CLIENT_ID, clientId);
             signal.Dispatch();
             signal.ClearParameters();
         }
@@ -152,6 +169,31 @@ namespace Game
 
             var signal = GameSignals.INPUT_NETWORK;
             signal.AddParameter(GameParams.INPUT_TYPE, GestureType.TAP);
+            signal.AddParameter(GameParams.NETWORK_CLIENT_ID, clientId);
+            signal.Dispatch();
+            signal.ClearParameters();
+        }
+
+        [Command]
+        void CmdDispatchLongPress()
+        {
+            Debug.Log("Client Long Press detected");
+
+            var signal = GameSignals.INPUT_NETWORK;
+            signal.AddParameter(GameParams.INPUT_TYPE, GestureType.LONG_PRESS);
+            signal.AddParameter(GameParams.NETWORK_CLIENT_ID, clientId);
+            signal.Dispatch();
+            signal.ClearParameters();
+        }
+
+        [Command]
+        void CmdDispatchPinch()
+        {
+            Debug.Log("Client Pinch detected");
+
+            var signal = GameSignals.INPUT_NETWORK;
+            signal.AddParameter(GameParams.INPUT_TYPE, GestureType.PINCH);
+            signal.AddParameter(GameParams.NETWORK_CLIENT_ID, clientId);
             signal.Dispatch();
             signal.ClearParameters();
         }
