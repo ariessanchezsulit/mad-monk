@@ -74,7 +74,7 @@ namespace Game {
 			float hp = (float)(int)parameters.GetParameter(GameParams.MONSTER_HP);
 			float maxHp = (float)(int)parameters.GetParameter(GameParams.MONSTER_MAX_HP);
 
-			float rectWidth = GaugeFillMaxWidth * (hp / maxHp);
+			float rectWidth = GaugeFillMaxWidth * Mathf.Clamp01(hp / maxHp);
 
 			Vector2 sizeDelta = GaugeFillImage.rectTransform.sizeDelta;
 			sizeDelta.x = rectWidth;

@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Game;
-using Common.Signal;
 
 public enum MonsterType
 {
@@ -23,6 +21,9 @@ public class Monster : MonoBehaviour
 	public float MonkEatenY;
 	public float TowerTopY;
 	public float TowerBottomY;
+	public float HiddenY;
+
+	public float LerpSpeed = 10;
 
 	private float Speed;
 
@@ -54,28 +55,52 @@ public class Monster : MonoBehaviour
 		}
 	}
 
-	void OnEnable()
-	{
-		Signal signal = GameSignals.ON_PLAY_SFX;
-		signal.AddParameter(GameParams.AUDIO_ID, ESfx.Start);
-		signal.Dispatch();
-	}
-
 	public void Show(Vector3 initialPosition)
 	{
+		StopAllCoroutines ();
+
 		HitPoints = BubblesToReachBottom;
-		RendererT.localPosition = initialPosition;
+//		RendererT.localPosition = initialPosition;
 		RendererGo.SetActive(true);
 
-		Signal signal = GameSignals.ON_PLAY_SFX;
-		signal.AddParameter(GameParams.AUDIO_ID, UnityEngine.Random.Range(0, 2) == 0 ? ESfx.Monster001 : ESfx.Monster002);
-		signal.Dispatch();
+		Slide (initialPosition);
 	}
 
 	public void Hide()
 	{
 		// TODO play die
+//		RendererGo.SetActive(false);
+
+		Vector3 hiddenPos = RendererT.localPosition;
+		hiddenPos.y = HiddenY;
+		SlideThenHide (hiddenPos);
+	}
+
+	private void Slide(Vector3 targetPos)
+	{
+		StopAllCoroutines ();
+		StartCoroutine(SlideCoroutine(targetPos));
+	}
+
+	private void SlideThenHide(Vector3 targetPos)
+	{
+		StopAllCoroutines ();
+		StartCoroutine(SlideThenHideCoroutine (targetPos));
+	}
+
+	private IEnumerator SlideThenHideCoroutine(Vector3 targetPos)
+	{
+		yield return StartCoroutine (SlideCoroutine (targetPos));
 		RendererGo.SetActive(false);
+	}
+
+	private IEnumerator SlideCoroutine(Vector3 targetPos)
+	{
+		while (RendererT.localPosition != targetPos) {
+			Vector3 newPos = Vector3.Lerp (RendererT.localPosition, targetPos, Time.deltaTime * LerpSpeed);
+			RendererT.localPosition = newPos;
+			yield return null;
+		}
 	}
 
 	public void SetSpeed(float speed)
@@ -88,7 +113,8 @@ public class Monster : MonoBehaviour
 		HitPoints++;
 		Vector3 pos = RendererT.localPosition;
 		pos.y += Speed;
-		RendererT.localPosition = pos;
+		Slide (pos);
+//		RendererT.localPosition = pos;
 	}
 
 	public void Lower()
@@ -96,6 +122,7 @@ public class Monster : MonoBehaviour
 		HitPoints--;
 		Vector3 pos = RendererT.localPosition;
 		pos.y -= Speed;
-		RendererT.localPosition = pos;
+		Slide (pos);
+//		RendererT.localPosition = pos;
 	}
 }
