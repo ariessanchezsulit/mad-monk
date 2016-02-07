@@ -10,25 +10,28 @@ using Common;
 using Common.Signal;
 
 namespace Game {
-
+	
 	public class BubblesRoot : MonoBehaviour {
-
+		
 		[SerializeField]
 		private Pool pool;
 		
 		[SerializeField]
-		private float interval = 2.0f;
+		private float spawnInterval = 2.0f;
 
-		private float totalTime;
-
-		[SerializeField]
-		private int levelInterval = 10;
+		private float waveTotalTime;
 
 		[SerializeField]
-		private int totalTimeInt;
+		private int waveTotalTimeInt;
 
 		[SerializeField]
-		private int level;
+		private int waveInterval = 10;
+		
+		[SerializeField]
+		private int wave;
+
+		//[SerializeField]
+		//private float waveElapsedTime = 0.0f;
 
 		// probability
 		[SerializeField]
@@ -105,11 +108,12 @@ namespace Game {
 			if (!this.started) {
 				return;
 			}
-
-			this.totalTime += Time.deltaTime;
-			this.totalTimeInt = Mathf.RoundToInt(this.totalTime);
+			
+			this.waveTotalTime += Time.deltaTime;
+			this.waveTotalTimeInt = Mathf.RoundToInt(this.waveTotalTime);
 
 			// interval every 20 sec
+			/*
 			this.level = (this.totalTimeInt - (this.totalTimeInt % this.levelInterval)) / this.levelInterval;
 			if (this.level >= 6) {
 				this.AdjustLevel(1.0f, 50, 50, 10);
@@ -132,15 +136,32 @@ namespace Game {
 			else {
 				this.AdjustLevel(2.0f, 100);
 			}
+			*/
+
+			// iterate levels/waves
+			this.wave = (this.waveTotalTimeInt - (this.waveTotalTimeInt % this.waveInterval)) / this.waveInterval;
+			if (this.numberOfBubbles.Length < this.wave) {
+				this.numberOfBubbles = new int[this.wave];
+				for (int i = 0; i < this.wave; i++) {
+					this.numberOfBubbles[i] = 100 - (100 / this.wave) * i;
+				}
+			}
+			else {
+
+				// Precise method which guarantees v = v1 when t = 1.
+				//float lerp(float v0, float v1, float t) {
+				//	return (1-t)*v0 + t*v1;
+				//}
+			}
 		}
 
-		private void AdjustLevel(float interval, params int[] values) {
+		private void AdjustLevel(float spawnInterval, params int[] values) {
 			if (this.numberOfBubbles.Length != values.Length) {
 				this.numberOfBubbles = new int[values.Length];
 			}
 
 			// set interval
-			this.interval = interval;
+			this.spawnInterval = spawnInterval;
 
 			// set progression
 			for (int i = 0; i < values.Length; i++) {
@@ -152,17 +173,17 @@ namespace Game {
 			this.StopAllCoroutines ();
 			this.StartCoroutine(this.GenerateBubble());
 			this.started = true;
-			this.totalTime = 0.0f;
-			this.totalTimeInt = 0;
-			this.level = 0;
+			this.waveTotalTime = 0.0f;
+			this.waveTotalTimeInt = 0;
+			this.wave = 0;
 		}
 
 		private void OnEndGame(ISignalParameters @params) {
 			this.StopAllCoroutines ();
 			this.started = false;
-			this.totalTime = 0.0f;
-			this.totalTimeInt = 0;
-			this.level = 0;
+			this.waveTotalTime = 0.0f;
+			this.waveTotalTimeInt = 0;
+			this.wave = 0;
 		}
 
 		private void PopBubble(GestureType type) {
@@ -207,12 +228,10 @@ namespace Game {
 		}
 
 		private IEnumerator GenerateBubble()  {
+			/*
 			yield return new WaitForSeconds(this.interval);
 
 			while (true) {
-				// random number for bubbles
-				int random = URandom.Range(1, 4);
-
 				// TODO: Pool the bubbles here
 				Transform template = this.pool.Tempalte().transform;
 
@@ -226,11 +245,17 @@ namespace Game {
 					bubble.transform.localScale = template.localScale;
 					bubble.SetActive(true);
 
-					yield return new WaitForSeconds(URandom.Range(0.15f, 0.5f));
+					float random = URandom.Range(0.0f, 0.5f);
+					if (random > 0.15f) {
+						yield return new WaitForSeconds(random);
+					}
 				}
 
 				yield return new WaitForSeconds(this.interval);
 			}
+			*/
+
+			yield break;
 		}
 
 		private int CalculateProbability() {
@@ -245,7 +270,7 @@ namespace Game {
 				}
 			}
 
-			Assertion.Assert(false);
+			//Assertion.Assert(false);
 			return -1;
 		}
 
