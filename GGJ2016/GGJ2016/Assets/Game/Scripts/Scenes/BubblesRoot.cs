@@ -12,7 +12,10 @@ using Common.Signal;
 namespace Game {
 	
 	public class BubblesRoot : MonoBehaviour {
-		
+
+		public static float PSEUDO_DELTA = 0.01f;
+		public static float PSEUDO_AXIS = 0.01f;
+
 		[SerializeField]
 		private Pool pool;
 		
@@ -25,13 +28,21 @@ namespace Game {
 		private int waveTotalTimeInt;
 
 		[SerializeField]
-		private int waveInterval = 10;
+		private int waveInterval = 30;
 		
 		[SerializeField]
 		private int wave;
 
 		[SerializeField]
 		private float waveElapsedTime = 0.0f;
+
+		[SerializeField]
+		[Range(0.0f, 0.01f)]
+		private float pseudoDelta = 0.01f;
+
+		[SerializeField]
+		[Range(0.0f, 1.0f)]
+		private float bubbleAxis = 1.0f;
 
 		// probability
 		[SerializeField]
@@ -67,8 +78,7 @@ namespace Game {
 			GameSignals.INPUT_NETWORK.AddListener ((ISignalParameters parameters) => ProcessInput(parameters, false));
 		}
 
-		private void ProcessInput(ISignalParameters parameters, bool isLocal)
-		{
+		private void ProcessInput(ISignalParameters parameters, bool isLocal) {
 			GestureType gesture = (GestureType)parameters.GetParameter(GameParams.INPUT_TYPE);
 			if (gesture == GestureType.SWIPE) {
 				SwipePayload swipePayload = (SwipePayload)parameters.GetParameter(GameParams.INPUT_SWIPE_PAYLOAD);
@@ -77,6 +87,11 @@ namespace Game {
 			else {
 				this.PopBubble(gesture);
 			}
+		}
+
+		private void Update() {
+			PSEUDO_DELTA = this.pseudoDelta;
+			PSEUDO_AXIS = this.bubbleAxis;
 		}
 
 		private void LateUpdate() {

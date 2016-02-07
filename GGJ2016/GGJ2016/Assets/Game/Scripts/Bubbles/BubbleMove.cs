@@ -12,7 +12,9 @@ namespace Game {
 
 	public class BubbleMove : MonoBehaviour {
 		//public const float CAP_Y_POSITION = 400.0f;
-		
+		[SerializeField]
+		private float pseudoDelta = 0.001f;
+
 		[SerializeField]
 		private float speed = 200.0f;
 		[SerializeField]
@@ -86,14 +88,17 @@ namespace Game {
 			}
 		}
 
+		private Vector3 pseudoAxis;
 		private void Move() {
-			this.pos += this.transform.up * Time.fixedDeltaTime  * this.speed;
+			//this.pos += this.transform.up * Time.fixedDeltaTime  * this.speed;
+			this.pos += this.transform.up * BubblesRoot.PSEUDO_DELTA  * this.speed;
+			this.pseudoAxis = this.axis * BubblesRoot.PSEUDO_AXIS;
 			
 			if (this.direction > 0) {
-				this.cachedTransform.position = this.pos + this.axis * Mathf.Sin(Time.time * this.frequency) * this.magnitude;
+				this.cachedTransform.position = this.pos + this.pseudoAxis * Mathf.Sin(Time.time * this.frequency) * this.magnitude;
 			}
 			else {
-				this.cachedTransform.position = this.pos + this.axis * -Mathf.Sin(Time.time * this.frequency) * this.magnitude;
+				this.cachedTransform.position = this.pos + this.pseudoAxis * -Mathf.Sin(Time.time * this.frequency) * this.magnitude;
 			}
 		}
 
