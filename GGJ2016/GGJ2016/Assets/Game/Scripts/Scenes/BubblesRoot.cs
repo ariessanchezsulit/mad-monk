@@ -30,8 +30,8 @@ namespace Game {
 		[SerializeField]
 		private int wave;
 
-		//[SerializeField]
-		//private float waveElapsedTime = 0.0f;
+		[SerializeField]
+		private float waveElapsedTime = 0.0f;
 
 		// probability
 		[SerializeField]
@@ -80,31 +80,6 @@ namespace Game {
 		}
 
 		private void LateUpdate() {
-			//	2.5
-			//	Bubbles[0] = 100
-			// -
-			//	2
-			//	Bubbles[0] = 100
-			//	Bubbles[1] = 5
-			// -
-			//	1.75
-			//  Bubbles[0] = 100
-			//	Bubbles[1] = 10
-			// -
-			//	1.50
-			//	Bubbles[0] = 100
-			//	Bubbles[1] = 20
-			// -
-			//	1.25
-			//	Bubbles[0] = 100
-			//	Bubbles[1] = 30
-			//	Bubbles[2] = 5
-			// -
-			//	1.0
-			//	Bubbles[0] = 50
-			//	Bubbles[1] = 50
-			//	Bubbles[2] = 10
-
 			if (!this.started) {
 				return;
 			}
@@ -112,46 +87,30 @@ namespace Game {
 			this.waveTotalTime += Time.deltaTime;
 			this.waveTotalTimeInt = Mathf.RoundToInt(this.waveTotalTime);
 
-			// interval every 20 sec
-			/*
-			this.level = (this.totalTimeInt - (this.totalTimeInt % this.levelInterval)) / this.levelInterval;
-			if (this.level >= 6) {
-				this.AdjustLevel(1.0f, 50, 50, 10);
-			}
-			else if (this.level >= 5) {
-				this.AdjustLevel(1.0f, 100, 30, 5);
-			}
-			else if (this.level >= 4) {
-				this.AdjustLevel(1.25f, 100, 20);
-			}
-			else if (this.level >= 3) {
-				this.AdjustLevel(1.25f, 100, 20);
-			}
-			else if (this.level >= 2) {
-				this.AdjustLevel(1.5f, 100, 10);
-			}
-			else if (this.level >= 1) {
-				this.AdjustLevel(1.5f, 100, 5);
-			}
-			else {
-				this.AdjustLevel(2.0f, 100);
-			}
-			*/
-
-			// iterate levels/waves
+			// iterate levels/waves every 20 sec
 			this.wave = (this.waveTotalTimeInt - (this.waveTotalTimeInt % this.waveInterval)) / this.waveInterval;
 			if (this.numberOfBubbles.Length < this.wave) {
 				this.numberOfBubbles = new int[this.wave];
 				for (int i = 0; i < this.wave; i++) {
 					this.numberOfBubbles[i] = 100 - (100 / this.wave) * i;
 				}
+
+				// reset wave
+				this.waveElapsedTime = 0.0f;
 			}
 			else {
+				this.waveElapsedTime += Time.deltaTime;
+				float fracTime = this.waveElapsedTime / (float)this.waveInterval;
 
-				// Precise method which guarantees v = v1 when t = 1.
-				//float lerp(float v0, float v1, float t) {
-				//	return (1-t)*v0 + t*v1;
-				//}
+				// targetIndex = |(index - len)| - 1
+				int len = this.numberOfBubbles.Length;
+				for (int i = 0; i < len; i++) {
+					int targetIndex = Math.Abs(i - len) - 1;
+					float curr = (float)this.numberOfBubbles[i];
+					float target = (float)this.numberOfBubbles[targetIndex];
+					//(1-t)*v0 + t*v1;
+					this.numberOfBubbles[i] = (int)((1.0f - fracTime) * curr + fracTime * target);
+				}
 			}
 		}
 
@@ -228,8 +187,7 @@ namespace Game {
 		}
 
 		private IEnumerator GenerateBubble()  {
-			/*
-			yield return new WaitForSeconds(this.interval);
+			yield return new WaitForSeconds(this.spawnInterval);
 
 			while (true) {
 				// TODO: Pool the bubbles here
@@ -251,11 +209,8 @@ namespace Game {
 					}
 				}
 
-				yield return new WaitForSeconds(this.interval);
+				yield return new WaitForSeconds(this.spawnInterval);
 			}
-			*/
-
-			yield break;
 		}
 
 		private int CalculateProbability() {

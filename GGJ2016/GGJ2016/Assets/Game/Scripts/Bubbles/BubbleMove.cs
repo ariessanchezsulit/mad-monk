@@ -76,11 +76,11 @@ namespace Game {
 		private void LateUpdate() {
 			if (this.transform.position.y >= this.capPositionY) {
 				// dispatch bubble missed
-				Signal signal = GameSignals.ON_BUBBLE_MISSED;
-				signal.Dispatch();
+				//Signal signal = GameSignals.ON_BUBBLE_MISSED;
+				//signal.Dispatch();
 
 				// remove to pool
-				signal = GameSignals.ON_BUBBLE_REMOVED_TO_POOL;
+				Signal signal = GameSignals.ON_BUBBLE_REMOVED_TO_POOL;
 				signal.AddParameter(GameParams.BUBBLE, this.gameObject);
 				signal.Dispatch();
 			}
