@@ -7,6 +7,17 @@ namespace Game {
     {
 		void Start()
 		{
+            StartCoroutine(StartGame());
+        }
+
+        IEnumerator StartGame()
+        {
+            //yield return null;
+            //yield return LoadSceneAdditiveAsync(EScene.World);
+            //yield return LoadSceneAdditiveAsync(EScene.UI);
+
+            yield return new WaitForSeconds(1f);
+
             GameSignals.START_GAME.Dispatch();
         }
 	}
