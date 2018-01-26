@@ -6,13 +6,15 @@ namespace Game {
 	public class Platform : MonoBehaviour {
 
 		public static bool IsEditor() {
-			if ((Application.platform == RuntimePlatform.OSXDashboardPlayer)
-				||	(Application.platform == RuntimePlatform.OSXEditor)
+			if (
+                //(Application.platform == RuntimePlatform.OSXDashboardPlayer)
+				//||	
+                (Application.platform == RuntimePlatform.OSXEditor)
 				||	(Application.platform == RuntimePlatform.OSXPlayer)
-				||	(Application.platform == RuntimePlatform.OSXWebPlayer)
+				//||	(Application.platform == RuntimePlatform.OSXWebPlayer)
 				||	(Application.platform == RuntimePlatform.WindowsEditor)
 				||	(Application.platform == RuntimePlatform.WindowsPlayer)
-				||	(Application.platform == RuntimePlatform.WindowsWebPlayer)
+				//||	(Application.platform == RuntimePlatform.WindowsWebPlayer)
 			) {
 				//Debug.Log("#### Editor:" + Application.platform);
 				return true;
@@ -25,10 +27,10 @@ namespace Game {
 			if (	//(Application.platform == RuntimePlatform.OSXDashboardPlayer)
 				//||	(Application.platform == RuntimePlatform.OSXEditor)
 					(Application.platform == RuntimePlatform.OSXPlayer)
-				||	(Application.platform == RuntimePlatform.OSXWebPlayer)
+				//||	(Application.platform == RuntimePlatform.OSXWebPlayer)
 				//||	(Application.platform == RuntimePlatform.WindowsEditor)
 				||	(Application.platform == RuntimePlatform.WindowsPlayer)
-				||	(Application.platform == RuntimePlatform.WindowsWebPlayer)
+				//||	(Application.platform == RuntimePlatform.WindowsWebPlayer)
 			) {
 				//Debug.Log("#### Editor:" + Application.platform);
 				return true;
