@@ -7,7 +7,8 @@ namespace Game {
     {
 		void Start()
 		{
-            StartCoroutine(StartGame());
+            //StartCoroutine(StartGame());
+            GameSignals.START_GAME.Dispatch();
         }
 
         IEnumerator StartGame()
