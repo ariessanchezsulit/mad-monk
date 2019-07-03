@@ -19,19 +19,19 @@ public static class Assertion {
 	public static void Assert(bool expression, string assertErrorMessage) {
 		if (!expression) {
 			Debug.LogError(assertErrorMessage);
-			
-			// use logger only if not in editor
-#if !UNITY_EDITOR
-			try {
-#endif
-				throw new Exception(assertErrorMessage);
-#if !UNITY_EDITOR
-			} catch(Exception e) {
-				Logger.GetInstance().LogError(assertErrorMessage);
-				Logger.GetInstance().LogError(e.StackTrace);
-				throw e;
-			}
-#endif
+
+            // use logger only if not in editor
+//#if !UNITY_EDITOR || !UNITY_STANDALONE_WIN
+//			try {
+//#endif
+//            throw new Exception(assertErrorMessage);
+//#if !UNITY_EDITOR || !UNITY_STANDALONE_WIN
+//			} catch(Exception e) {
+//				Logger.GetInstance().LogError(assertErrorMessage);
+//				Logger.GetInstance().LogError(e.StackTrace);
+//				throw e;
+//			}
+//#endif
 		}
 	}
 
