@@ -12,7 +12,9 @@ namespace Game {
 
 	public class BubbleMove : MonoBehaviour {
 		//public const float CAP_Y_POSITION = 400.0f;
-		
+		[SerializeField]
+		private float pseudoDelta = 0.001f;
+
 		[SerializeField]
 		private float speed = 200.0f;
 		[SerializeField]
@@ -76,24 +78,27 @@ namespace Game {
 		private void LateUpdate() {
 			if (this.transform.position.y >= this.capPositionY) {
 				// dispatch bubble missed
-				Signal signal = GameSignals.ON_BUBBLE_MISSED;
-				signal.Dispatch();
+				//Signal signal = GameSignals.ON_BUBBLE_MISSED;
+				//signal.Dispatch();
 
 				// remove to pool
-				signal = GameSignals.ON_BUBBLE_REMOVED_TO_POOL;
+				Signal signal = GameSignals.ON_BUBBLE_REMOVED_TO_POOL;
 				signal.AddParameter(GameParams.BUBBLE, this.gameObject);
 				signal.Dispatch();
 			}
 		}
 
+		private Vector3 pseudoAxis;
 		private void Move() {
-			this.pos += this.transform.up * Time.fixedDeltaTime  * this.speed;
+			//this.pos += this.transform.up * Time.fixedDeltaTime  * this.speed;
+			this.pos += this.transform.up * BubblesRoot.PSEUDO_DELTA  * this.speed;
+			this.pseudoAxis = this.axis * BubblesRoot.PSEUDO_AXIS;
 			
 			if (this.direction > 0) {
-				this.cachedTransform.position = this.pos + this.axis * Mathf.Sin(Time.time * this.frequency) * this.magnitude;
+				this.cachedTransform.position = this.pos + this.pseudoAxis * Mathf.Sin(Time.time * this.frequency) * this.magnitude;
 			}
 			else {
-				this.cachedTransform.position = this.pos + this.axis * -Mathf.Sin(Time.time * this.frequency) * this.magnitude;
+				this.cachedTransform.position = this.pos + this.pseudoAxis * -Mathf.Sin(Time.time * this.frequency) * this.magnitude;
 			}
 		}
 

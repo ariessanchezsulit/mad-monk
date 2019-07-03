@@ -3,13 +3,23 @@ using System.Collections;
 
 namespace Game {
 
-	public class SystemRoot : GameScene {
+	public class SystemRoot : GameScene
+    {
 		void Start()
 		{
-			LoadSceneAdditive (EScene.World);
-			//LoadSceneAdditive (EScene.Bubbles);
-			LoadSceneAdditive (EScene.UI);
-		}
-	}
+            //StartCoroutine(StartGame());
+            GameSignals.START_GAME.Dispatch();
+        }
 
+        IEnumerator StartGame()
+        {
+            //yield return null;
+            //yield return LoadSceneAdditiveAsync(EScene.World);
+            //yield return LoadSceneAdditiveAsync(EScene.UI);
+
+            yield return new WaitForSeconds(1f);
+
+            GameSignals.START_GAME.Dispatch();
+        }
+	}
 }
